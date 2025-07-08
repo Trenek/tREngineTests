@@ -1,0 +1,7 @@
+[submodule "samples/glTF"]
+	path = samples/glTF
+	url = https://github.com/KhronosGroup/glTF-Sample-Assets
+[submodule "dependencies/tREngine"]
+	path = dependencies/tREngine
+	url = https://github.com/Trenek/tREngine
+	branch = dev-gltf
