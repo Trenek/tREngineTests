@@ -15,9 +15,14 @@
 
 #include "Vertex.h"
 
+#define MODEL_BIN(x) "samples/glTF/Models/"x"/glTF-Binary/"x".glb"
+#define MODEL_EMB(x) "samples/glTF/Models/"x"/glTF-Embedded/"x".gltf"
+#define MODEL(x)     "samples/glTF/Models/"x"/glTF/"x".gltf"
+
 static const char *models[] = {
-    "samples/glTF/Models/Box/glTF-Binary/Box.glb",
-    "samples/glTF/Models/RiggedSimple/glTF-Binary/RiggedSimple.glb",
+    MODEL_EMB("Triangle"),
+    MODEL_EMB("TriangleWithoutIndices"),
+    MODEL_EMB("AnimatedTriangle"),
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
 static int32_t currModel = 0;

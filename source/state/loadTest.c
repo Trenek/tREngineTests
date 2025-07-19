@@ -43,9 +43,9 @@ static void createScreens(struct EngineCore *engine) {
             },
             .qData = 1,
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
-            .camera = {
-                .pos = { 2.0f, 2.0f, 2.0f },
-                .direction = { -1.0f, -1.0f, -1.0f }
+            .camera.tP = {
+                .center = { 0.0f, 0.0f, 0.0f },
+                .relativePos = { 1.0f, 1.0f, 1.0f }
             }
         }, &engine->graphics),
         destroyRenderPassObj

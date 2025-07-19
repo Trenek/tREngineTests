@@ -30,13 +30,14 @@ void test(struct EngineCore *engine, enum state *state) {
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
 
     while (TEST == *state && !shouldWindowClose(engine->window)) {
-        glfwPollEvents();
+        updateWindow(&engine->window);
 
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
+        moveThirdPersonCamera(&engine->window, &renderPass[0]->camera, engine->deltaTime.deltaTime);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
 
-        if ((KEY_PRESS | KEY_CHANGE) == getKeyState(&engine->window, GLFW_KEY_SPACE)) {
+        if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
             *state = MOVE_NEXT;
         }
     }
