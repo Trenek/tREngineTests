@@ -4,17 +4,27 @@
 
 int main() {
     struct EngineCore engine = setup("Engine Tester", "icon/iconka.png");
-    void (* const state[])(struct EngineCore *engine, enum state *state) = {
-        [TEST] = test,
-        [LOAD_TEST] = loadTest,
-        [LOAD_RESOURCES] = loadResources,
-        [MOVE_NEXT] = moveNext,
+    void (*const state[][STATE_Q])(struct EngineCore *engine, enum state *state) = {
+        [MESH][TEST] = meshTest,
+        [MESH][LOAD_TEST] = loadMeshTest,
+        [MESH][LOAD_RESOURCES] = loadMeshResources,
+        [MESH][MOVE_NEXT] = moveNextMesh,
+
+        [FONT][TEST] = fontTest,
+        [FONT][LOAD_TEST] = loadFontTest,
+        [FONT][LOAD_RESOURCES] = loadFontResources,
+        [FONT][MOVE_NEXT] = moveNextFont,
+        [FONT][MOVE_NEXT_STRING] = moveNextString,
     };
-    enum state stateID = LOAD_RESOURCES;
+
+    enum state stateID[] = {
+        FONT,
+        LOAD_RESOURCES
+    };
 
     do {
-        state[stateID](&engine, &stateID);
-    } while (stateID != EXIT && !shouldWindowClose(engine.window));
+        state[stateID[0]][stateID[1]](&engine, stateID);
+    } while (stateID[0] != EXIT && !shouldWindowClose(engine.window));
 
     cleanup(engine);
 

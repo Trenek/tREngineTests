@@ -15,18 +15,44 @@
 
 #include "Vertex.h"
 
-#define MODEL_BIN(x) "samples/glTF/Models/"x"/glTF-Binary/"x".glb"
-#define MODEL_EMB(x) "samples/glTF/Models/"x"/glTF-Embedded/"x".gltf"
-#define MODEL(x)     "samples/glTF/Models/"x"/glTF/"x".gltf"
-
-static const char *models[] = {
-    MODEL_EMB("Triangle"),
-    MODEL_EMB("TriangleWithoutIndices"),
-    MODEL_EMB("AnimatedTriangle"),
+static const char *const models[] = {
+    "samples/fonts/b.ttf",
+    "samples/fonts/c.ttf"
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
 static int32_t currModel = 0;
 
+static const char *const string[] = {
+    "Objekt",
+    "a",
+    "b",
+    "c",
+    "tak"
+};
+static const int32_t qString = sizeof(string) / sizeof(const char *);
+static int32_t currString = 0;
+
+void moveNextFont(struct EngineCore *engine, enum state *state) {
+    vkDeviceWaitIdle(engine->graphics.device);
+    cleanupResourcesOrg(&engine->resource);
+    engine->resource = (struct ResourceManager) {};
+
+    state[1] = LOAD_RESOURCES;
+
+    currModel += 1;
+    currModel %= qModels;
+}
+
+void moveNextString(struct EngineCore *engine, enum state *state) {
+    vkDeviceWaitIdle(engine->graphics.device);
+    cleanupResourcesOrg(&engine->resource);
+    engine->resource = (struct ResourceManager) {};
+
+    state[1] = LOAD_RESOURCES;
+
+    currString += 1;
+    currString %= qString;
+}
 static void addTextures(struct EngineCore *this) {
     struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
 
@@ -40,7 +66,7 @@ static void addTextures(struct EngineCore *this) {
 static void addModelData(struct EngineCore *this) {
     struct ResourceManager *modelData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(modelData, "Box", loadModel(models[currModel], &this->graphics), destroyActualModel);
+    addResource(modelData, "Font", loadModel(models[currModel], &this->graphics), destroyActualModel);
 
     addResource(&this->resource, "modelData", modelData, cleanupResourceManager);
 }
@@ -104,19 +130,19 @@ static void createGraphicPipelines(struct EngineCore *this) {
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassCore *);
 
-    addResource(graphicPipelinesData, "GLTF-Pipe", createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
+    addResource(graphicPipelinesData, "Text", createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
         .qRenderPassCore = qRenderPass,
         .renderPassCore = renderPass,
-        .vertexShader = "shaders/vert.spv",
-        .fragmentShader = "shaders/frag.spv",
+        .vertexShader = "shaders/text2dV.spv",
+        .fragmentShader = "shaders/textF.spv",
         .minDepth = 0.0f,
         .maxDepth = 1.0f,
+        .texture = &colorTexture->descriptor,
         .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 
-        .texture = &colorTexture->descriptor,
         .objectLayout = objectLayout->descriptorSetLayout,
 
-        Vert(AnimVertex),
+        Vert(FontVertex),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
 
@@ -126,24 +152,37 @@ static void createGraphicPipelines(struct EngineCore *this) {
     addResource(&this->resource, "graphicPipelines", graphicPipelinesData, cleanupResourceManager);
 }
 
+void addString(
+    struct ResourceManager *entityData,
+    struct ResourceManager *modelData,
+
+    struct descriptorSetLayout *objectLayout,
+    struct EngineCore *this,
+    const char *buffer
+) {
+    addResource(entityData, buffer, createString((struct StringBuilder) {
+        .instanceCount = 1,
+        .string = string[currString],
+        .modelData = findResource(modelData, "Font"),
+        .objectLayout = objectLayout->descriptorSetLayout,
+
+        INS(instance, instanceBuffer),
+        .center = 0
+    }, &this->graphics), destroyEntity);
+}
+
 static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *modelData = findResource(&this->resource, "modelData");
 
     struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, "objectLayout"), "object");
 
-    addResource(entityData, "Object", createModel((struct ModelBuilder) {
-        .instanceCount = 1,
-        .modelData = findResource(modelData, "Box"),
-        .objectLayout = objectLayout->descriptorSetLayout,
-
-        INS(instance, instanceBuffer),
-    }, &this->graphics), destroyEntity);
+    addString(entityData, modelData, objectLayout, this, "Object");
 
     addResource(&this->resource, "Entity", entityData, cleanupResourceManager);
 }
 
-void loadResources(struct EngineCore *engine, enum state *state) {
+void loadFontResources(struct EngineCore *engine, enum state *state) {
     addTextures(engine);
     addModelData(engine);
 
@@ -153,8 +192,5 @@ void loadResources(struct EngineCore *engine, enum state *state) {
     createGraphicPipelines(engine);
     addEntities(engine);
 
-    *state = LOAD_TEST;
-
-    currModel += 1;
-    currModel %= qModels;
+    state[1] = LOAD_TEST;
 }

@@ -5,9 +5,8 @@
 layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec2 fragTexCoord;
 layout(location = 2) in flat uint fragTexIndex;
-layout(location = 3) in flat uint shadow;
-layout(location = 4) in vec3 fragNormal;
-layout(location = 5) in vec3 fragVertex;
+layout(location = 3) in vec3 fragNormal;
+layout(location = 4) in vec3 fragVertex;
 
 layout(location = 0) out vec4 outColor;
 

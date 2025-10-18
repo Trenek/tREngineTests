@@ -45,7 +45,7 @@ static void createScreens(struct EngineCore *engine) {
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
             .camera.tP = {
                 .center = { 0.0f, 0.0f, 0.0f },
-                .relativePos = { 1.0f, 1.0f, 1.0f }
+                .relativePos = { -2.0f, 0.0f, 0.0f }
             }
         }, &engine->graphics),
         destroyRenderPassObj
@@ -64,8 +64,8 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, "ScreenData", screenData, cleanupResourceManager);
 }
 
-void loadTest(struct EngineCore *engine, enum state *state) {
+void loadMeshTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
 
-    *state = TEST;
+    state[1] = TEST;
 }

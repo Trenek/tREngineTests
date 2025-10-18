@@ -5,3 +5,6 @@
 	path = dependencies/tREngine
 	url = https://github.com/Trenek/tREngine
 	branch = dev-gltf
+[submodule "samples/legacy-glTF"]
+	path = samples/legacy-glTF
+	url = https://github.com/KhronosGroup/glTF-Sample-Models
