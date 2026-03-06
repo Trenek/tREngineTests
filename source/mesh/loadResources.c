@@ -20,13 +20,14 @@
 #define MODEL_ORG(x) "samples/glTF/Models/"x"/glTF/"x".gltf"
 
 static const char *const models[] = {
-    //MODEL_EMB("SimpleMorph"), // TODO: Implement Morphing
     MODEL_EMB("SimpleTexture"),
     MODEL_EMB("TriangleWithoutIndices"),
     MODEL_EMB("Triangle"),
     MODEL_EMB("AnimatedTriangle"),
     MODEL_EMB("SimpleMeshes"),
     MODEL_EMB("SimpleSparseAccessor"),
+    MODEL_EMB("SimpleMorph"), // TODO: implement morphing
+    MODEL_EMB("SimpleSkin"),
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
 static int32_t currModel = 0;
