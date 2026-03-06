@@ -20,7 +20,7 @@
 #define MODEL_ORG(x) "samples/glTF/Models/"x"/glTF/"x".gltf"
 
 static const char *const models[] = {
-    MODEL_EMB("SimpleMorph"),
+    //MODEL_EMB("SimpleMorph"), // TODO: Implement Morphing
     MODEL_EMB("SimpleTexture"),
     MODEL_EMB("TriangleWithoutIndices"),
     MODEL_EMB("Triangle"),
@@ -34,9 +34,9 @@ static int32_t currModel = 0;
 static void addTextures(struct EngineCore *this) {
     struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(textureManager, "PlaceHolder", loadTextures(&this->graphics, 1, (const char *[]){
-        "icon/iconka.png",
-    }), unloadTextures);
+    struct ResourceManager *modelData = findResource(&this->resource, "modelData");
+    struct actualModel *model = findResource(modelData, "Box");
+    addResource(textureManager, "PlaceHolder", loadTextures(&this->graphics, 1, &model->textureData), unloadTextures);
 
     addResource(&this->resource, "textures", textureManager, cleanupResourceManager);
 }
@@ -155,8 +155,8 @@ static void addEntities(struct EngineCore *this) {
 }
 
 void loadMeshResources(struct EngineCore *engine, enum state *state) {
-    addTextures(engine);
     addModelData(engine);
+    addTextures(engine);
 
     addRenderPassCoreData(engine);
     addObjectLayout(engine);

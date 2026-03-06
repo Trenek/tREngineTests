@@ -57,7 +57,7 @@ static void createScreens(struct EngineCore *engine) {
         .pos = { 0.0f, 0.0f, 0.0f },
         .rotation = { 0.0f, 0.0f, 0.0f },
         .fixedRotation = { 0.0f, 0.0f, 0.0f },
-        .scale = { 4 * 10e-3, 4 * 10e-3, 4 * 10e-3 },
+        .scale = { 3 * 10e-6, 3 * 10e-6, 3 * 10e-6 },
         .textureIndex = 0
     };
 

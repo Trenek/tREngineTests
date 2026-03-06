@@ -3,7 +3,7 @@
 #include "state.h"
 
 int main() {
-    struct EngineCore engine = setup("Engine Tester", "icon/iconka.png");
+    struct EngineCore engine = setup("Engine Tester", "icon/ikonka.png");
     void (*const state[][STATE_Q])(struct EngineCore *engine, enum state *state) = {
         [MESH][TEST] = meshTest,
         [MESH][LOAD_TEST] = loadMeshTest,
@@ -18,7 +18,7 @@ int main() {
     };
 
     enum state stateID[] = {
-        FONT,
+        MESH,
         LOAD_RESOURCES
     };
 

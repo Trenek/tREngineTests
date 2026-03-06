@@ -17,7 +17,8 @@
 
 static const char *const models[] = {
     "samples/fonts/b.ttf",
-    "samples/fonts/c.ttf"
+    "samples/fonts/c.ttf",
+    "samples/fonts/d.ttf",
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
 static int32_t currModel = 0;
@@ -56,9 +57,7 @@ void moveNextString(struct EngineCore *engine, enum state *state) {
 static void addTextures(struct EngineCore *this) {
     struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(textureManager, "PlaceHolder", loadTextures(&this->graphics, 1, (const char *[]){
-        "icon/iconka.png",
-    }), unloadTextures);
+    addResource(textureManager, "PlaceHolder", loadTextures(&this->graphics, 1, (char *[]){ NULL }), unloadTextures);
 
     addResource(&this->resource, "textures", textureManager, cleanupResourceManager);
 }
