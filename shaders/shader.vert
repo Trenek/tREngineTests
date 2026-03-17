@@ -4,6 +4,8 @@ layout(location = 0) in  vec3 inPosition;
 layout(location = 1) in  vec3 inNormal;
 layout(location = 2) in  vec3 inColor;
 layout(location = 3) in  vec2 inTexCoord;
+layout(location = 4) in ivec4 inBoneIDs;
+layout(location = 5) in  vec4 inWeights;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
@@ -38,7 +40,13 @@ layout(push_constant) uniform constants {
 } PushConstants;
 
 vec4 applyAnimation(vec4 p) {
-    return anim.transformations[PushConstants.meshID] * p;
+    vec4 result = vec4(0.0);
+
+    for (int i = 0; i < 4; i += 1) {
+        result += anim.transformations[inBoneIDs[i]] * (inWeights[i] * p);
+    }
+
+    return result / dot(inWeights, vec4(1.0));
 }
 
 void main() {
