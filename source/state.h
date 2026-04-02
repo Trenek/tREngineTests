@@ -2,7 +2,7 @@
 #define STATE_H
 
 enum state {
-    MESH = 0,
+    OBJ = 0,
     FONT,
 
     MOVE_NEXT = 0,
@@ -17,10 +17,10 @@ enum state {
 
 struct EngineCore;
 
-void meshTest(struct EngineCore *engine, enum state *state);
-void loadMeshResources(struct EngineCore *engine, enum state *state);
-void loadMeshTest(struct EngineCore *engine, enum state *state);
-void moveNextMesh(struct EngineCore *engine, enum state *state);
+void objTest(struct EngineCore *engine, enum state *state);
+void loadObjResources(struct EngineCore *engine, enum state *state);
+void loadObjTest(struct EngineCore *engine, enum state *state);
+void moveNextObj(struct EngineCore *engine, enum state *state);
 
 void fontTest(struct EngineCore *engine, enum state *state);
 void loadFontResources(struct EngineCore *engine, enum state *state);

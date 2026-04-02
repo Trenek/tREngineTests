@@ -1,5 +1,3 @@
-#include <cglm.h>
-
 #include "engineCore.h"
 #include "state.h"
 
@@ -10,24 +8,26 @@
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
 
+#include "objEnum.h"
+
 static void createScreens(struct EngineCore *engine) {
-    struct ResourceManager *entityData = findResource(&engine->resource, "Entity");
-    struct ResourceManager *graphicPipelineData = findResource(&engine->resource, "graphicPipelines");
+    struct ResourceManager *entityData = findResource(&engine->resource, OBJ_ENTITIES);
+    struct ResourceManager *graphicPipelineData = findResource(&engine->resource, OBJ_GRAPHIC_PIPELINES);
 
     struct graphicsPipeline *pipe[] = { 
-        findResource(graphicPipelineData, "GLTF-Pipe"),
+        findResource(graphicPipelineData, OBJ_GRAPHIC_PIPELINES_1),
     };
 
     struct Entity *entity[] = {
-        findResource(entityData, "Object")
+        findResource(entityData, OBJ_ENTITIES_1)
     };
     
     struct ResourceManager *screenData = calloc(1, sizeof(struct ResourceManager));
 
-    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, "RenderPassCoreData");
-    struct renderPassCore *clean = findResource(renderPassCoreData, "Clean");
+    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, OBJ_RENDER_PASS);
+    struct renderPassCore *clean = findResource(renderPassCoreData, OBJ_RENDER_PASS_CLEAN);
 
-    addResource(screenData, "Screen", 
+    addResource(screenData, OBJ_SCREEN_1,
         createRenderPassObj((struct renderPassBuilder){
             .coordinates = { 0.0, 0.0, 1.0, 1.0 },
             .color = { 0.5f, 0.5f, 0.5f, 1.0f },
@@ -45,15 +45,15 @@ static void createScreens(struct EngineCore *engine) {
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
             .camera.tP = {
                 .center = { 0.0f, 0.0f, 0.0f },
-                .relativePos = { -2.0f, 0.0f, 0.0f }
+                .relativePos = { 100.0f, 100.0f, 100.0f },
             }
         }, &engine->graphics),
         destroyRenderPassObj
     );
 
-    struct instance *floor = entity[0]->instance;
+    struct instance *params = entity[0]->instance;
 
-    floor[0] = (struct instance){
+    params[0] = (struct instance){
         .pos = { 0.0f, 0.0f, 0.0f },
         .rotation = { 0.0f, 0.0f, 0.0f },
         .fixedRotation = { 0.0f, 0.0f, 0.0f },
@@ -61,10 +61,10 @@ static void createScreens(struct EngineCore *engine) {
         .textureIndex = 0
     };
 
-    addResource(&engine->resource, "ScreenData", screenData, cleanupResourceManager);
+    addResource(&engine->resource, OBJ_SCREEN, screenData, cleanupResourceManager);
 }
 
-void loadMeshTest(struct EngineCore *engine, enum state *state) {
+void loadObjTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
 
     state[1] = TEST;

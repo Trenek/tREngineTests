@@ -1,4 +1,4 @@
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 #include "engineCore.h"
 #include "state.h"
@@ -9,34 +9,28 @@
 
 #include "renderPassObj.h"
 
-void meshTest(struct EngineCore *engine, enum state *state) {
-    struct ResourceManager *entityData = findResource(&engine->resource, "Entity");
-    struct ResourceManager *screenData = findResource(&engine->resource, "ScreenData");
-    struct ResourceManager *modelData = findResource(&engine->resource, "modelData");
+#include "objEnum.h"
+
+void objTest(struct EngineCore *engine, enum state *state) {
+    struct ResourceManager *entityData = findResource(&engine->resource, OBJ_ENTITIES);
+    struct ResourceManager *screenData = findResource(&engine->resource, OBJ_SCREEN);
+    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, OBJ_RENDER_PASS);
 
     struct Entity *entity[] = {
-        findResource(entityData, "Object")
+        findResource(entityData, OBJ_ENTITIES_1)
     };
     size_t qEntity = sizeof(entity) / sizeof(struct Entity *);
 
-    [[maybe_unused]]
-    struct actualModel *model[] = {
-        findResource(modelData, "Box")
-    };
-    
     struct renderPassObj *renderPass[] = {
-        findResource(screenData, "Screen"),
+        findResource(screenData, OBJ_SCREEN_1),
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassObj *);
 
-    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, "RenderPassCoreData");
     struct renderPassCore *renderPassArr[] = { 
-        findResource(renderPassCoreData, "Clean"),
-        findResource(renderPassCoreData, "Stay")
+        findResource(renderPassCoreData, OBJ_RENDER_PASS_CLEAN),
+        findResource(renderPassCoreData, OBJ_RENDER_PASS_STAY)
     };
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
-
-    float time = 0;
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         updateWindow(&engine->window);
@@ -45,9 +39,7 @@ void meshTest(struct EngineCore *engine, enum state *state) {
         moveThirdPersonCamera(&engine->window, &renderPass[0]->camera, engine->deltaTime.deltaTime);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
-        animate(entity[0], model[0], 0, time);
 
-        time += engine->deltaTime.deltaTime;
         if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
             state[1] = MOVE_NEXT;
         }

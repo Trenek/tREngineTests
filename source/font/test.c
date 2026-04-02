@@ -1,5 +1,3 @@
-#include <cglm.h>
-
 #include "engineCore.h"
 #include "state.h"
 #include "actualModel.h"
@@ -9,34 +7,28 @@
 
 #include "renderPassObj.h"
 
+#include "fontEnum.h"
+
 void fontTest(struct EngineCore *engine, enum state *state) {
-    struct ResourceManager *entityData = findResource(&engine->resource, "Entity");
-    struct ResourceManager *screenData = findResource(&engine->resource, "ScreenData");
-    struct ResourceManager *modelData = findResource(&engine->resource, "modelData");
+    struct ResourceManager *entityData = findResource(&engine->resource, FONT_ENTITIES);
+    struct ResourceManager *screenData = findResource(&engine->resource, FONT_SCREEN);
+    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, FONT_RENDER_PASS);
 
     struct Entity *entity[] = {
-        findResource(entityData, "Object")
+        findResource(entityData, FONT_ENTITIES_1)
     };
     size_t qEntity = sizeof(entity) / sizeof(struct Entity *);
 
-    [[maybe_unused]]
-    struct actualModel *model[] = {
-        findResource(modelData, "Font")
-    };
-    
     struct renderPassObj *renderPass[] = {
-        findResource(screenData, "Screen"),
+        findResource(screenData, FONT_SCREEN_1),
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassObj *);
 
-    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, "RenderPassCoreData");
     struct renderPassCore *renderPassArr[] = { 
-        findResource(renderPassCoreData, "Clean"),
-        findResource(renderPassCoreData, "Stay")
+        findResource(renderPassCoreData, FONT_RENDER_PASS_CLEAN),
+        findResource(renderPassCoreData, FONT_RENDER_PASS_STAY)
     };
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
-
-    float time = 0;
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         updateWindow(&engine->window);
@@ -45,9 +37,7 @@ void fontTest(struct EngineCore *engine, enum state *state) {
         moveThirdPersonCamera(&engine->window, &renderPass[0]->camera, engine->deltaTime.deltaTime);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
-        animate(entity[0], model[0], 0, time);
 
-        time += engine->deltaTime.deltaTime;
         if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
             state[1] = MOVE_NEXT;
         }

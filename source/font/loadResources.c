@@ -1,11 +1,8 @@
-#include <cglm.h>
-
 #include "engineCore.h"
 #include "state.h"
 
 #include "asset.h"
 #include "entity.h"
-#include "modelBuilder.h"
 #include "stringBuilder.h"
 #include "instanceBuffer.h"
 
@@ -14,6 +11,8 @@
 #include "graphicsPipelineObj.h"
 
 #include "Vertex.h"
+
+#include "fontEnum.h"
 
 static const char *const models[] = {
     "samples/fonts/b.ttf",
@@ -57,38 +56,38 @@ void moveNextString(struct EngineCore *engine, enum state *state) {
 static void addTextures(struct EngineCore *this) {
     struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(textureManager, "PlaceHolder", loadTextures(&this->graphics, 1, (char *[]){ NULL }), unloadTextures);
+    addResource(textureManager, FONT_TEXTURE_1, loadTextures(&this->graphics, 1, (char *[]){ NULL }), unloadTextures);
 
-    addResource(&this->resource, "textures", textureManager, cleanupResourceManager);
+    addResource(&this->resource, FONT_TEXTURES, textureManager, cleanupResourceManager);
 }
 
 static void addModelData(struct EngineCore *this) {
     struct ResourceManager *modelData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(modelData, "Font", loadModel(models[currModel], &this->graphics), destroyActualModel);
+    addResource(modelData, FONT_MODEL_1, loadModel(models[currModel], &this->graphics), destroyActualModel);
 
-    addResource(&this->resource, "modelData", modelData, cleanupResourceManager);
+    addResource(&this->resource, FONT_MODEL, modelData, cleanupResourceManager);
 }
 
 static void addRenderPassCoreData(struct EngineCore *this) {
     struct ResourceManager *renderPassCoreData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(renderPassCoreData, "Clean", createRenderPassCore((struct renderPassCoreBuilder) {
+    addResource(renderPassCoreData, FONT_RENDER_PASS_CLEAN, createRenderPassCore((struct renderPassCoreBuilder) {
         .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
         .initLayout = VK_IMAGE_LAYOUT_UNDEFINED
     }, &this->graphics), freeRenderPassCore);
-    addResource(renderPassCoreData, "Stay", createRenderPassCore((struct renderPassCoreBuilder) {
+    addResource(renderPassCoreData, FONT_RENDER_PASS_STAY, createRenderPassCore((struct renderPassCoreBuilder) {
         .loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
         .initLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
     }, &this->graphics), freeRenderPassCore);
 
-    addResource(&this->resource, "RenderPassCoreData", renderPassCoreData, cleanupResourceManager);
+    addResource(&this->resource, FONT_RENDER_PASS, renderPassCoreData, cleanupResourceManager);
 }
 
 static void addObjectLayout(struct EngineCore *this) {
     struct ResourceManager *objectLayoutData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(objectLayoutData, "object", createDescriptorSetLayout(
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayout(
         createObjectDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
             {
                 .binding = 0,
@@ -107,29 +106,29 @@ static void addObjectLayout(struct EngineCore *this) {
         }), this->graphics.device), 
         destroyDescriptorSetLayout
     );
-    addResource(objectLayoutData, "camera", 
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_CAMERA, 
         createDescriptorSetLayout(createCameraDescriptorSetLayout(this->graphics.device), this->graphics.device), 
         destroyDescriptorSetLayout
     );
 
-    addResource(&this->resource, "objectLayout", objectLayoutData, cleanupResourceManager);
+    addResource(&this->resource, FONT_OBJECT_LAYOUT, objectLayoutData, cleanupResourceManager);
 }
 
 static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
-    struct ResourceManager *renderPassCoreData = findResource(&this->resource, "RenderPassCoreData");
+    struct ResourceManager *renderPassCoreData = findResource(&this->resource, FONT_RENDER_PASS);
 
-    struct Textures *colorTexture = findResource(findResource(&this->resource, "textures"), "PlaceHolder");
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, "objectLayout"), "object");
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, "objectLayout"), "camera");
+    struct Textures *colorTexture = findResource(findResource(&this->resource, FONT_TEXTURES), FONT_TEXTURE_1);
+    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
+    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
 
     struct renderPassCore *renderPass[] = {
-        findResource(renderPassCoreData, "Clean"),
-        findResource(renderPassCoreData, "Stay")
+        findResource(renderPassCoreData, FONT_RENDER_PASS_CLEAN),
+        findResource(renderPassCoreData, FONT_RENDER_PASS_STAY)
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassCore *);
 
-    addResource(graphicPipelinesData, "Text", createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
+    addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINES_1, createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
         .qRenderPassCore = qRenderPass,
         .renderPassCore = renderPass,
         .vertexShader = "shaders/text2dV.spv",
@@ -148,7 +147,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .cameraLayout = cameraLayout->descriptorSetLayout
     }, &this->graphics), destroyObjGraphicsPipeline);
 
-    addResource(&this->resource, "graphicPipelines", graphicPipelinesData, cleanupResourceManager);
+    addResource(&this->resource, FONT_GRAPHIC_PIPELINES, graphicPipelinesData, cleanupResourceManager);
 }
 
 void addString(
@@ -157,12 +156,12 @@ void addString(
 
     struct descriptorSetLayout *objectLayout,
     struct EngineCore *this,
-    const char *buffer
+    size_t id
 ) {
-    addResource(entityData, buffer, createString((struct StringBuilder) {
+    addResource(entityData, id, createString((struct StringBuilder) {
         .instanceCount = 1,
         .string = string[currString],
-        .modelData = findResource(modelData, "Font"),
+        .modelData = findResource(modelData, FONT_MODEL_1),
         .objectLayout = objectLayout->descriptorSetLayout,
 
         INS(instance, instanceBuffer),
@@ -172,13 +171,13 @@ void addString(
 
 static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
-    struct ResourceManager *modelData = findResource(&this->resource, "modelData");
+    struct ResourceManager *modelData = findResource(&this->resource, FONT_MODEL);
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, "objectLayout"), "object");
+    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
 
-    addString(entityData, modelData, objectLayout, this, "Object");
+    addString(entityData, modelData, objectLayout, this, FONT_ENTITIES_1);
 
-    addResource(&this->resource, "Entity", entityData, cleanupResourceManager);
+    addResource(&this->resource, FONT_ENTITIES, entityData, cleanupResourceManager);
 }
 
 void loadFontResources(struct EngineCore *engine, enum state *state) {

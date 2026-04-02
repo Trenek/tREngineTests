@@ -2,11 +2,10 @@
 
 #extension GL_EXT_nonuniform_qualifier : enable
 
-layout(location = 0) in vec3 fragColor;
-layout(location = 1) in vec2 fragTexCoord;
-layout(location = 2) in flat uint fragTexIndex;
-layout(location = 3) in vec3 fragNormal;
-layout(location = 4) in vec3 fragVertex;
+layout(location = 0) in vec2 fragTexCoord;
+layout(location = 1) in flat uint fragTexIndex;
+layout(location = 2) in vec3 fragNormal;
+layout(location = 3) in vec3 fragVertex;
 
 layout(location = 0) out vec4 outColor;
 
@@ -17,17 +16,15 @@ float minmax(float minn, float maxx, float val) {
 }
 
 void main() {
-    vec3 color = texture(texSampler[fragTexIndex], fragTexCoord).rgb;
+    const vec3 color = vec3(1, 1, 1);
 
-    const vec3 lightColor = vec3(
-        //100.0 / 256.0, 200.0 / 256.0, 255.0 / 256.0
-        1.0, 1.0, 1.0
-    );
-    
-    const vec3 center = vec3(0, 0, 3);
-    const vec3 direction = center - fragVertex;
-    const float nor = distance(center.xy, fragVertex.xy);
-    const float diff = minmax(0.1, 0.9, exp(-nor) * dot(fragNormal, direction));
+    const vec3 lightColor = vec3(1.0, 0.0, 1.0);
+    const vec3 direction = normalize(vec3(-1, -1, -1));
+
+    const vec3 fdx = dFdx(fragVertex);
+    const vec3 fdy = dFdy(fragVertex);
+    const vec3 normal = normalize(cross(fdx, fdy));
+    const float diff = minmax(0.1, 0.9, dot(normal, direction));
 
     outColor = vec4((diff * lightColor) * color, 1.0);
 }
