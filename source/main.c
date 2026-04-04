@@ -15,10 +15,14 @@ int main() {
         [OBJ][LOAD_TEST] = loadObjTest,
         [OBJ][LOAD_RESOURCES] = loadObjResources,
         [OBJ][MOVE_NEXT] = moveNextObj,
+
+        [MULTI_OBJ][TEST] = multiObjTest,
+        [MULTI_OBJ][LOAD_TEST] = loadMultiObjTest,
+        [MULTI_OBJ][LOAD_RESOURCES] = loadMultiObjResources,
     };
 
     enum state stateID[] = {
-        OBJ,
+        MULTI_OBJ,
         LOAD_RESOURCES
     };
 

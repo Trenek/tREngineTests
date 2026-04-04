@@ -1,0 +1,78 @@
+newmtl papa1
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa1.jpg
+  map_Kd papa1.jpg
+newmtl papa2
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa2.jpg
+  map_Kd papa2.jpg
+newmtl papa3
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa3.jpg
+  map_Kd papa3.jpg
+newmtl papa4
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa4.jpg
+  map_Kd papa4.jpg
+newmtl papa5
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa5.jpg
+  map_Kd papa5.jpg
+newmtl papa6
+  Ns 10.0000
+  Ni 1.5000
+  d 1.0000
+  Tr 0.0000
+  Tf 1.0000 1.0000 1.0000 
+  illum 2
+  Ka 0.10 0.10 0.10
+  Kd 0.566 0.566 0.566
+  Ks 0.50 0.50 0.50
+  Ke 0.0000 0.0000 0.0000
+  map_Ka papa6.jpg
+  map_Kd papa6.jpg

@@ -3,6 +3,7 @@
 
 enum state {
     OBJ = 0,
+    MULTI_OBJ,
     FONT,
 
     MOVE_NEXT = 0,
@@ -21,6 +22,11 @@ void objTest(struct EngineCore *engine, enum state *state);
 void loadObjResources(struct EngineCore *engine, enum state *state);
 void loadObjTest(struct EngineCore *engine, enum state *state);
 void moveNextObj(struct EngineCore *engine, enum state *state);
+
+void multiObjTest(struct EngineCore *engine, enum state *state);
+void loadMultiObjResources(struct EngineCore *engine, enum state *state);
+void loadMultiObjTest(struct EngineCore *engine, enum state *state);
+void moveNextMultiObj(struct EngineCore *engine, enum state *state);
 
 void fontTest(struct EngineCore *engine, enum state *state);
 void loadFontResources(struct EngineCore *engine, enum state *state);

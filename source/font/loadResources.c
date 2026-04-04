@@ -9,7 +9,9 @@
 #include "renderPassCore.h"
 
 #include "graphicsPipelineObj.h"
+#include "graphicsPipelineLayout.h"
 
+#include "pushConstantsBuffer.h"
 #include "Vertex.h"
 
 #include "fontEnum.h"
@@ -52,13 +54,6 @@ void moveNextString(struct EngineCore *engine, enum state *state) {
 
     currString += 1;
     currString %= qString;
-}
-static void addTextures(struct EngineCore *this) {
-    struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
-
-    addResource(textureManager, FONT_TEXTURE_1, loadTextures(&this->graphics, 1, (char *[]){ NULL }), unloadTextures);
-
-    addResource(&this->resource, FONT_TEXTURES, textureManager, cleanupResourceManager);
 }
 
 static void addModelData(struct EngineCore *this) {
@@ -114,13 +109,37 @@ static void addObjectLayout(struct EngineCore *this) {
     addResource(&this->resource, FONT_OBJECT_LAYOUT, objectLayoutData, cleanupResourceManager);
 }
 
+static void createGraphicPipelineLayouts(struct EngineCore *this) {
+    struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
+
+    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
+    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
+
+    addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+        .descriptorSetLayout = (VkDescriptorSetLayout []){
+            objectLayout->descriptorSetLayout,
+            cameraLayout->descriptorSetLayout,
+        },
+        .qDescriptorSetLayout = 2,
+
+        .pushConstantRangeCount = 1,
+        .pPushConstantRanges = (VkPushConstantRange []) {
+            {
+                .offset = 0,
+                .size = sizeof(struct FontPushConstants),
+                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT
+            }
+        }
+    }, &this->graphics), destroyObjGraphicsPipelineLayout);
+
+    addResource(&this->resource, FONT_GRAPHIC_PIPELINE_LAYOUTS, graphicPipelinesData, cleanupResourceManager);
+}
+
 static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, FONT_RENDER_PASS);
 
-    struct Textures *colorTexture = findResource(findResource(&this->resource, FONT_TEXTURES), FONT_TEXTURE_1);
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
+    struct graphicsPipelineLayout *pipelineLayout = findResource(findResource(&this->resource, FONT_GRAPHIC_PIPELINE_LAYOUTS), FONT_GRAPHIC_PIPELINE_LAYOUT_1);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, FONT_RENDER_PASS_CLEAN),
@@ -129,22 +148,19 @@ static void createGraphicPipelines(struct EngineCore *this) {
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassCore *);
 
     addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINES_1, createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
+        .pipelineLayout = pipelineLayout->pipelineLayout,
+
         .qRenderPassCore = qRenderPass,
         .renderPassCore = renderPass,
         .vertexShader = "shaders/text2dV.spv",
         .fragmentShader = "shaders/textF.spv",
         .minDepth = 0.0f,
         .maxDepth = 1.0f,
-        .texture = &colorTexture->descriptor,
         .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-
-        .objectLayout = objectLayout->descriptorSetLayout,
 
         Vert(FontVertex),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
-
-        .cameraLayout = cameraLayout->descriptorSetLayout
     }, &this->graphics), destroyObjGraphicsPipeline);
 
     addResource(&this->resource, FONT_GRAPHIC_PIPELINES, graphicPipelinesData, cleanupResourceManager);
@@ -181,12 +197,12 @@ static void addEntities(struct EngineCore *this) {
 }
 
 void loadFontResources(struct EngineCore *engine, enum state *state) {
-    addTextures(engine);
     addModelData(engine);
 
     addRenderPassCoreData(engine);
     addObjectLayout(engine);
 
+    createGraphicPipelineLayouts(engine);
     createGraphicPipelines(engine);
     addEntities(engine);
 
