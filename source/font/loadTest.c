@@ -15,6 +15,7 @@ static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *graphicPipelineData = findResource(&engine->resource, FONT_GRAPHIC_PIPELINES);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, FONT_RENDER_PASS);
 
+    struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
     struct graphicsPipeline *pipe[] = { 
         findResource(graphicPipelineData, FONT_GRAPHIC_PIPELINES_1),
     };
@@ -41,10 +42,11 @@ static void createScreens(struct EngineCore *engine) {
             },
             .qData = 1,
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
-            .camera.tP = {
+            .camera = {
                 .center = { 0.0f, 0.0f, 0.0f },
                 .relativePos = { -2.0f, 0.0f, 0.0f }
-            }
+            },
+            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
         }, &engine->graphics),
         destroyRenderPassObj
     );

@@ -14,9 +14,7 @@
 #include "graphicsPipelineLayout.h"
 #include "graphicsPipelineObj.h"
 
-#include "Vertex.h"
-
-#include "pushConstantsBuffer.h"
+#include "obj.h"
 
 #include "multiObjEnum.h"
 
@@ -102,8 +100,8 @@ static void addRenderPassCoreData(struct EngineCore *this) {
 static void addObjectLayout(struct EngineCore *this) {
     struct ResourceManager *objectLayoutData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(objectLayoutData, MULTI_OBJ_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayout(
-        createObjectDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
+    addResource(objectLayoutData, MULTI_OBJ_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayoutObj(
+        createDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
             {
                 .binding = 0,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
@@ -122,7 +120,7 @@ static void addObjectLayout(struct EngineCore *this) {
         destroyDescriptorSetLayout
     );
     addResource(objectLayoutData, MULTI_OBJ_OBJECT_LAYOUT_CAMERA, 
-        createDescriptorSetLayout(createCameraDescriptorSetLayout(this->graphics.device), this->graphics.device), 
+        createDescriptorSetLayoutObj(createCameraDescriptorSetLayout(this->graphics.device), this->graphics.device), 
         destroyDescriptorSetLayout
     );
 

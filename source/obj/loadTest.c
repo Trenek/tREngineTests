@@ -17,6 +17,7 @@ static void createScreens(struct EngineCore *engine) {
     struct graphicsPipeline *pipe[] = { 
         findResource(graphicPipelineData, OBJ_GRAPHIC_PIPELINES_1),
     };
+    struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, OBJ_OBJECT_LAYOUT), OBJ_OBJECT_LAYOUT_CAMERA);
 
     struct Entity *entity[] = {
         findResource(entityData, OBJ_ENTITIES_1)
@@ -27,7 +28,6 @@ static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, OBJ_RENDER_PASS);
     struct renderPassCore *clean = findResource(renderPassCoreData, OBJ_RENDER_PASS_CLEAN);
     struct Textures *colorTexture = findResource(findResource(&engine->resource, OBJ_TEXTURES), OBJ_TEXTURE_1);
-
 
     addResource(screenData, OBJ_SCREEN_1,
         createRenderPassObj((struct renderPassBuilder){
@@ -46,10 +46,11 @@ static void createScreens(struct EngineCore *engine) {
             },
             .qData = 1,
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
-            .camera.tP = {
+            .camera = {
                 .center = { 0.0f, 0.0f, 0.0f },
                 .relativePos = { 2.0f, 2.0f, 2.0f },
-            }
+            },
+            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
         }, &engine->graphics),
         destroyRenderPassObj
     );

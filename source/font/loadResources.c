@@ -11,8 +11,7 @@
 #include "graphicsPipelineObj.h"
 #include "graphicsPipelineLayout.h"
 
-#include "pushConstantsBuffer.h"
-#include "Vertex.h"
+#include "ttf.h"
 
 #include "fontEnum.h"
 
@@ -82,8 +81,8 @@ static void addRenderPassCoreData(struct EngineCore *this) {
 static void addObjectLayout(struct EngineCore *this) {
     struct ResourceManager *objectLayoutData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayout(
-        createObjectDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayoutObj(
+        createDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
             {
                 .binding = 0,
                 .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
@@ -101,8 +100,16 @@ static void addObjectLayout(struct EngineCore *this) {
         }), this->graphics.device), 
         destroyDescriptorSetLayout
     );
-    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_CAMERA, 
-        createDescriptorSetLayout(createCameraDescriptorSetLayout(this->graphics.device), this->graphics.device), 
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_CAMERA, createDescriptorSetLayoutObj(
+        createDescriptorSetLayout(this->graphics.device, 1, (VkDescriptorSetLayoutBinding []) {
+            {
+                .binding = 0,
+                .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                .descriptorCount = 1,
+                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+                .pImmutableSamplers = NULL
+            }
+        }), this->graphics.device), 
         destroyDescriptorSetLayout
     );
 
