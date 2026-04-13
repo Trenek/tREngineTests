@@ -19,10 +19,15 @@ int main() {
         [MULTI_OBJ][TEST] = multiObjTest,
         [MULTI_OBJ][LOAD_TEST] = loadMultiObjTest,
         [MULTI_OBJ][LOAD_RESOURCES] = loadMultiObjResources,
+
+        [GLTF][TEST] = gltfTest,
+        [GLTF][LOAD_TEST] = loadGltfTest,
+        [GLTF][LOAD_RESOURCES] = loadGltfResources,
+        [GLTF][MOVE_NEXT] = moveNextGltf,
     };
 
     enum state stateID[] = {
-        MULTI_OBJ,
+        GLTF,
         LOAD_RESOURCES
     };
 

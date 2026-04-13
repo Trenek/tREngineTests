@@ -5,6 +5,7 @@ enum state {
     OBJ = 0,
     MULTI_OBJ,
     FONT,
+    GLTF,
 
     MOVE_NEXT = 0,
     MOVE_NEXT_STRING,
@@ -33,5 +34,10 @@ void loadFontResources(struct EngineCore *engine, enum state *state);
 void loadFontTest(struct EngineCore *engine, enum state *state);
 void moveNextFont(struct EngineCore *engine, enum state *state);
 void moveNextString(struct EngineCore *engine, enum state *state);
+
+void gltfTest(struct EngineCore *engine, enum state *state);
+void loadGltfResources(struct EngineCore *engine, enum state *state);
+void loadGltfTest(struct EngineCore *engine, enum state *state);
+void moveNextGltf(struct EngineCore *engine, enum state *state);
 
 #endif
