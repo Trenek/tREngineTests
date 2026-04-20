@@ -23,16 +23,16 @@
 #define MODEL_BIN(x) "samples/glTF/Models/"x"/glTF-Binary/"x".glb"
 
 static const char *const models[] = {
-    "samples/myglTF/czlowiek.glb",
+    MODEL("AnimatedTriangle"),
+    MODEL("SimpleMorph"),
     MODEL_BIN("WaterBottle"),
     MODEL_EMB("SimpleTexture"),
     MODEL("SimpleMaterial"),
     MODEL("SimpleMeshes"),
-    MODEL("AnimatedTriangle"),
     MODEL("SimpleSparseAccessor"),
     MODEL("TriangleWithoutIndices"),
     MODEL("Triangle"),
-    // MODEL("SimpleMorph"), // TODO: implement morphing
+    "samples/myglTF/czlowiek.glb",
     // MODEL("SimpleSkin"),
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
