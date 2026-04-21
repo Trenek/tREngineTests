@@ -6,7 +6,6 @@
 #include "asset.h"
 #include "entity.h"
 #include "modelBuilder.h"
-#include "stringBuilder.h"
 #include "instanceBuffer.h"
 
 #include "renderPassCore.h"
@@ -194,7 +193,7 @@ static void addEntities(struct EngineCore *this) {
 
     struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, OBJ_OBJECT_LAYOUT), OBJ_OBJECT_LAYOUT_OBJECT);
 
-    addResource(entityData, OBJ_ENTITIES_1, createModel((struct ObjBuilder) {
+    addResource(entityData, OBJ_ENTITIES_1, createObj((struct ObjBuilder) {
         .instanceCount = 1,
         .modelData = findResource(modelData, OBJ_MODEL_1),
         .objectLayout = objectLayout->descriptorSetLayout,

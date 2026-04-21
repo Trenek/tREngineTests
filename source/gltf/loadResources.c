@@ -6,7 +6,6 @@
 #include "asset.h"
 #include "entity.h"
 #include "gltfBuilder.h"
-#include "stringBuilder.h"
 #include "instanceBuffer.h"
 
 #include "renderPassCore.h"

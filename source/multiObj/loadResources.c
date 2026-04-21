@@ -5,8 +5,7 @@
 
 #include "asset.h"
 #include "entity.h"
-#include "modelBuilder.h"
-#include "stringBuilder.h"
+#include "objBuilder.h"
 #include "instanceBuffer.h"
 
 #include "renderPassCore.h"
@@ -193,7 +192,7 @@ static void addEntities(struct EngineCore *this) {
     size_t *textureOffsets = findResource(&this->resource, MULTI_OBJ_TEXTURE_OFFSETS);
 
     for (int32_t i = 0; i < qModels; i += 1) {
-        addResource(entityData, i, createModel((struct ObjBuilder) {
+        addResource(entityData, i, createObj((struct ObjBuilder) {
             .instanceCount = 1,
             .modelData = findResource(modelData, i),
             .objectLayout = objectLayout->descriptorSetLayout,

@@ -3,7 +3,7 @@
 
 #include "asset.h"
 #include "entity.h"
-#include "stringBuilder.h"
+#include "fontBuilder.h"
 #include "instanceBuffer.h"
 
 #include "renderPassCore.h"
@@ -11,7 +11,7 @@
 #include "graphicsPipelineObj.h"
 #include "graphicsPipelineLayout.h"
 
-#include "ttf.h"
+#include "font.h"
 
 #include "fontEnum.h"
 
@@ -181,7 +181,7 @@ void addString(
     struct EngineCore *this,
     size_t id
 ) {
-    addResource(entityData, id, createString((struct StringBuilder) {
+    addResource(entityData, id, createFont((struct FontBuilder) {
         .instanceCount = 1,
         .string = string[currString],
         .modelData = findResource(modelData, FONT_MODEL_1),
