@@ -27,7 +27,7 @@ int main() {
     };
 
     enum state stateID[] = {
-        GLTF,
+        FONT,
         LOAD_RESOURCES
     };
 

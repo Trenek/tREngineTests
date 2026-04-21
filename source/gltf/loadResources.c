@@ -25,8 +25,9 @@
 #define MY_MODEL(x) "samples/myglTF/"x".glb"
 
 static const char *const models[] = {
-    MODEL("SimpleSkin"),
+    MY_MODEL("player"),
     MY_MODEL("czlowiek"),
+    MODEL("SimpleSkin"),
     MODEL("AnimatedTriangle"),
     MODEL("SimpleMorph"),
     MODEL_BIN("WaterBottle"),
@@ -63,7 +64,7 @@ static void addTextures(struct EngineCore *this) {
     addResource(
         textureManager, 
         GLTF_TEXTURE_1, 
-        loadTextures(&this->graphics, modelData->qTextures, modelData->inputTextures), 
+        loadTextures(&this->graphics, modelData->qTexture, modelData->texture), 
         unloadTextures
     );
 
@@ -150,7 +151,7 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
             {
                 .offset = 0,
                 .size = sizeof(struct GltfPushConstants),
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT
+                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT
             }
         }
     }, &this->graphics), destroyObjGraphicsPipelineLayout);

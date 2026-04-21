@@ -77,7 +77,7 @@ static void addTextures(struct EngineCore *this) {
     addResource(
         textureManager, 
         OBJ_TEXTURE_1, 
-        loadTextures(&this->graphics, modelData->qTextures, modelData->inputTextures), 
+        loadTextures(&this->graphics, modelData->qTexture, modelData->texture), 
         unloadTextures
     );
 

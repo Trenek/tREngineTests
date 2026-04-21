@@ -55,6 +55,7 @@ layout(std140, set = 0, binding = 2) readonly buffer NodeBuffer2{
 
 layout(push_constant) uniform constants {
 	int nodeID;
+    int materialID;
 } PushConstants;
 
 vec3 applyMorph(vec3 pos) {

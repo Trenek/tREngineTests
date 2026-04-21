@@ -42,19 +42,19 @@ size_t countTextures(struct ResourceManager *modelManager, size_t *textureOffset
 
     for (int32_t i = 0; i < qModels; i += 1) {
         textureOffsets[i] = result;
-        result += ((struct Model*)findResource(modelManager, i))->qTextures;
+        result += ((struct Model*)findResource(modelManager, i))->qTexture;
     }
 
     return result;
 }
 
-void consolidateTextures(struct ResourceManager *modelManager, char **textures) {
+void consolidateTextures(struct ResourceManager *modelManager, struct TextureData *textures) {
     int32_t k = 0;
 
     for (int32_t i = 0; i < qModels; i += 1) {
         struct Model *model = findResource(modelManager, i);
-        for (uint32_t j = 0; j < model->qTextures; j += 1) {
-            textures[k] = model->inputTextures[j];
+        for (uint32_t j = 0; j < model->qTexture; j += 1) {
+            textures[k] = model->texture[j];
             k += 1;
         }
     }
@@ -67,7 +67,7 @@ static void addTextures(struct EngineCore *this) {
     size_t *textureOffsets = malloc(qModels * sizeof(size_t));
 
     size_t qTextures = countTextures(modelData, textureOffsets);
-    char *textures[qTextures];
+    struct TextureData textures[qTextures];
 
     consolidateTextures(modelData, textures);
 
