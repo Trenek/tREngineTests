@@ -4,10 +4,12 @@ layout(location = 0) in  vec3 inPosition;
 layout(location = 1) in  vec3 inNormals;
 layout(location = 2) in  vec2 inTexCoords;
 layout(location = 3) in  vec3 inColor;
-layout(location = 4) in  vec3 inMorphPos1;
-layout(location = 5) in  vec3 inMorphPos2;
-layout(location = 6) in  vec3 inMorphPos3;
-layout(location = 7) in  vec3 inMorphPos4;
+layout(location = 4) in  vec4 inWeight;
+layout(location = 5) in  vec4 inJoint;
+layout(location = 6) in  vec3 inMorphPos1;
+layout(location = 7) in  vec3 inMorphPos2;
+layout(location = 8) in  vec3 inMorphPos3;
+layout(location = 9) in  vec3 inMorphPos4;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoords;
@@ -32,6 +34,11 @@ struct NodeData {
     float weight2;
     float weight3;
     float weight4;
+
+    int jointToNodeID;
+    int a;
+    int b;
+    int c;
 };
 
 layout(std140, set = 0, binding = 0) readonly buffer ObjectBuffer{
@@ -61,6 +68,23 @@ vec3 applyMorph(vec3 pos) {
     return result;
 }
 
+int getNodeID(float ID) {
+    return node2.data[int(ID)].jointToNodeID;
+}
+
+mat4 applyBoneTransform() {
+    mat4 result = mat4(0.0);
+
+    if (all(equal(inWeight, vec4(0.0)))) {
+        result = mat4(1.0);
+    }
+    else for (int i = 0; i < 4; i += 1) {
+        result += node2.data[getNodeID(inJoint[i])].animation * inWeight[i];
+    }
+
+    return result;
+}
+
 void main() {
     vec4 position = vec4(applyMorph(inPosition), 1.0);
     mat4 worldTransform = (
@@ -71,6 +95,7 @@ void main() {
 
     vec3 fragVertex = (
         worldTransform *
+        applyBoneTransform() *
         position
     ).xyz;
 

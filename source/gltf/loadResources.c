@@ -22,7 +22,11 @@
 #define MODEL_EMB(x) "samples/glTF/Models/"x"/glTF-Embedded/"x".gltf"
 #define MODEL_BIN(x) "samples/glTF/Models/"x"/glTF-Binary/"x".glb"
 
+#define MY_MODEL(x) "samples/myglTF/"x".glb"
+
 static const char *const models[] = {
+    MODEL("SimpleSkin"),
+    MY_MODEL("czlowiek"),
     MODEL("AnimatedTriangle"),
     MODEL("SimpleMorph"),
     MODEL_BIN("WaterBottle"),
@@ -32,8 +36,6 @@ static const char *const models[] = {
     MODEL("SimpleSparseAccessor"),
     MODEL("TriangleWithoutIndices"),
     MODEL("Triangle"),
-    "samples/myglTF/czlowiek.glb",
-    // MODEL("SimpleSkin"),
 };
 static const int32_t qModels = sizeof(models) / sizeof(const char *);
 static int32_t currModel = 0;
