@@ -6,6 +6,7 @@ enum state {
     MULTI_OBJ,
     FONT,
     GLTF,
+    REC,
 
     MOVE_NEXT = 0,
     MOVE_NEXT_STRING,
@@ -40,4 +41,7 @@ void loadGltfResources(struct EngineCore *engine, enum state *state);
 void loadGltfTest(struct EngineCore *engine, enum state *state);
 void moveNextGltf(struct EngineCore *engine, enum state *state);
 
+void recTest(struct EngineCore *engine, enum state *state);
+void loadRecResources(struct EngineCore *engine, enum state *state);
+void loadRecTest(struct EngineCore *engine, enum state *state);
 #endif

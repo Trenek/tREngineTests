@@ -76,6 +76,8 @@ add_custom_command(TARGET shaders POST_BUILD
     COMMAND glslc ${SHADER_SRC}/text.frag -o ${SHADER_DST}/textF.spv
     COMMAND glslc ${SHADER_SRC}/gltfShader.vert -o ${SHADER_DST}/gltfVert.spv
     COMMAND glslc ${SHADER_SRC}/gltfShader.frag -o ${SHADER_DST}/gltfFrag.spv
+    COMMAND glslc ${SHADER_SRC}/rec.vert -o ${SHADER_DST}/recVert.spv
+    COMMAND glslc ${SHADER_SRC}/rec.frag -o ${SHADER_DST}/recFrag.spv
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/icon ${CMAKE_BINARY_DIR}/icon
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/samples ${CMAKE_BINARY_DIR}/samples
 )

@@ -24,10 +24,14 @@ int main() {
         [GLTF][LOAD_TEST] = loadGltfTest,
         [GLTF][LOAD_RESOURCES] = loadGltfResources,
         [GLTF][MOVE_NEXT] = moveNextGltf,
+
+        [REC][TEST] = recTest,
+        [REC][LOAD_TEST] = loadRecTest,
+        [REC][LOAD_RESOURCES] = loadRecResources,
     };
 
     enum state stateID[] = {
-        FONT,
+        REC,
         LOAD_RESOURCES
     };
 
