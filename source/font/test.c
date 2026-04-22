@@ -34,7 +34,7 @@ void fontTest(struct EngineCore *engine, enum state *state) {
         updateWindow(&engine->window);
 
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
-        moveThirdPersonCamera(&engine->window, &renderPass[0]->camera, engine->deltaTime.deltaTime);
+        moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
 
