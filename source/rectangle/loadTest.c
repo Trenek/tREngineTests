@@ -48,8 +48,6 @@ static void createScreens(struct EngineCore *engine) {
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
             .cameraSize = sizeof(struct ThirdPerson),
             .camera = &(struct ThirdPerson){
-                .center = { 0.0f, 0.0f, 0.0f },
-                .relativePos = { 1.0f, 1.0f, 1.0f },
             },
             .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
         }, &engine->graphics),

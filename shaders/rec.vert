@@ -4,6 +4,7 @@ layout(location = 0) in  vec3 inPosition;
 layout(location = 1) in  vec2 inTexCoord;
 
 layout(location = 0) out vec2 fragTexCoord;
+layout(location = 1) out uint fragTexIndex;
 
 layout(set = 2, binding = 0) readonly uniform UniformBufferObject {
     mat4 view;
@@ -33,4 +34,5 @@ void main() {
     ).xy, 0.0, 1.0);
 
     fragTexCoord = inTexCoord;
+    fragTexIndex = instance.objects[0].index;
 }
