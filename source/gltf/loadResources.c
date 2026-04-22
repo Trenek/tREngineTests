@@ -89,41 +89,12 @@ static void addRenderPassCoreData(struct EngineCore *this) {
 static void addObjectLayout(struct EngineCore *this) {
     struct ResourceManager *objectLayoutData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(objectLayoutData, GLTF_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayoutObj(
-        createDescriptorSetLayout(this->graphics.device, 4, (VkDescriptorSetLayoutBinding []) {
-            {
-                .binding = 0,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            },
-            {
-                .binding = 1,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            },
-            {
-                .binding = 2,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            },
-            {
-                .binding = 3,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-                .pImmutableSamplers = NULL
-            },
-        }), this->graphics.device), 
+    addResource(objectLayoutData, GLTF_OBJECT_LAYOUT_OBJECT,
+        defaultGltfDescriptorSetLayout(this->graphics.device),
         destroyDescriptorSetLayout
     );
     addResource(objectLayoutData, GLTF_OBJECT_LAYOUT_CAMERA, 
-        createDescriptorSetLayoutObj(createCameraDescriptorSetLayout(this->graphics.device), this->graphics.device), 
+        defaultCameraDescriptorSetLayout(this->graphics.device),
         destroyDescriptorSetLayout
     );
 

@@ -81,35 +81,12 @@ static void addRenderPassCoreData(struct EngineCore *this) {
 static void addObjectLayout(struct EngineCore *this) {
     struct ResourceManager *objectLayoutData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_OBJECT, createDescriptorSetLayoutObj(
-        createDescriptorSetLayout(this->graphics.device, 2, (VkDescriptorSetLayoutBinding []) {
-            {
-                .binding = 0,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            },
-            {
-                .binding = 1,
-                .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            }
-        }), this->graphics.device), 
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_OBJECT, 
+        defaultFontDescriptorSetLayout(this->graphics.device),
         destroyDescriptorSetLayout
     );
-    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_CAMERA, createDescriptorSetLayoutObj(
-        createDescriptorSetLayout(this->graphics.device, 1, (VkDescriptorSetLayoutBinding []) {
-            {
-                .binding = 0,
-                .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = NULL
-            }
-        }), this->graphics.device), 
+    addResource(objectLayoutData, FONT_OBJECT_LAYOUT_CAMERA, 
+        defaultCameraDescriptorSetLayout(this->graphics.device),
         destroyDescriptorSetLayout
     );
 
