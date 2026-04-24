@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "rectangleBuilder.h"
 #include "instanceBuffer.h"
+#include "defaultCamera.h"
 
 #include "renderPassCore.h"
 

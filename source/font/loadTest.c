@@ -42,6 +42,7 @@ static void createScreens(struct EngineCore *engine) {
             },
             .qData = 1,
             .cameraSize = sizeof(struct ThirdPerson),
+            .cameraBufferSize = sizeof(struct CameraBuffer),
             .updateCameraBuffer = updateThirdPersonCameraBuffer,
             .camera = &(struct ThirdPerson){
                 .center = { 0.0f, 0.0f, 0.0f },

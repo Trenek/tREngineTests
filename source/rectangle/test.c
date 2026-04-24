@@ -12,8 +12,6 @@
 #include "rectangleEnum.h"
 #include "rectangle.h"
 
-#include "cameraBufferObject.h"
-
 #define MAX(x, y) ((x) > (y) ? (x) : (y)) 
 #define MIN(x, y) ((y) > (x) ? (x) : (y))
 

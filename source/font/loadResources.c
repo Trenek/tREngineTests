@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "fontBuilder.h"
 #include "instanceBuffer.h"
+#include "defaultCamera.h"
 
 #include "renderPassCore.h"
 
