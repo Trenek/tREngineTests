@@ -3,11 +3,12 @@
 #include "engineCore.h"
 #include "state.h"
 
-#include "asset.h"
+#include "texture.h"
+#include "model.h"
 #include "entity.h"
 #include "gltfBuilder.h"
-#include "instanceBuffer.h"
 #include "defaultCamera.h"
+#include "defaultInstance.h"
 
 #include "renderPassCore.h"
 

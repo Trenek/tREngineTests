@@ -1,9 +1,10 @@
 #include "engineCore.h"
 #include "state.h"
-#include "actualModel.h"
+
+#include "defaultInstance.h"
+#include "defaultCamera.h"
 
 #include "entity.h"
-#include "instanceBuffer.h"
 
 #include "renderPassObj.h"
 

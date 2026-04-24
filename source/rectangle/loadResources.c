@@ -2,11 +2,12 @@
 
 #include "engineCore.h"
 #include "state.h"
+#include "texture.h"
 
-#include "asset.h"
+#include "model.h"
 #include "entity.h"
 #include "rectangleBuilder.h"
-#include "instanceBuffer.h"
+#include "defaultInstance.h"
 #include "defaultCamera.h"
 
 #include "renderPassCore.h"

@@ -1,9 +1,11 @@
 #include "engineCore.h"
 #include "state.h"
 
-#include "asset.h"
+#include "texture.h"
 #include "entity.h"
-#include "instanceBuffer.h"
+
+#include "defaultInstance.h"
+#include "defaultCamera.h"
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
