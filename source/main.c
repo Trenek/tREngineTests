@@ -25,13 +25,18 @@ int main() {
         [GLTF][LOAD_RESOURCES] = loadGltfResources,
         [GLTF][MOVE_NEXT] = moveNextGltf,
 
+        [TWO_ANIMS_GLTF][TEST] = twoAnimsGltfTest,
+        [TWO_ANIMS_GLTF][LOAD_TEST] = loadTwoAnimsGltfTest,
+        [TWO_ANIMS_GLTF][LOAD_RESOURCES] = loadTwoAnimsGltfResources,
+        [TWO_ANIMS_GLTF][MOVE_NEXT] = moveNextTwoAnimsGltf,
+
         [REC][TEST] = recTest,
         [REC][LOAD_TEST] = loadRecTest,
         [REC][LOAD_RESOURCES] = loadRecResources,
     };
 
     enum state stateID[] = {
-        REC,
+        TWO_ANIMS_GLTF,
         LOAD_RESOURCES
     };
 
