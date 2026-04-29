@@ -163,7 +163,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .maxDepth = 1.0f,
         .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 
-        Vert(ObjVertex),
+        .vert = defaultObjVert(),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
     }, &this->graphics), destroyObjGraphicsPipeline);
@@ -184,7 +184,7 @@ static void addEntities(struct EngineCore *this) {
             .modelData = findResource(modelData, i),
             .objectLayout = objectLayout->descriptorSetLayout,
 
-            INS(instance, instanceBuffer),
+            .instance = defaultInstance(),
 
             .textureOffset = textureOffsets[i]
         }, &this->graphics), destroyEntity);

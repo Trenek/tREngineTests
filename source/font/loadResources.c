@@ -143,7 +143,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .maxDepth = 1.0f,
         .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 
-        Vert(FontVertex),
+        .vert = defaultFontVert(),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
     }, &this->graphics), destroyObjGraphicsPipeline);
@@ -165,7 +165,7 @@ void addString(
         .modelData = findResource(modelData, FONT_MODEL_1),
         .objectLayout = objectLayout->descriptorSetLayout,
 
-        INS(instance, instanceBuffer),
+        .instance = defaultInstance(),
         .center = 0
     }, &this->graphics), destroyEntity);
 }

@@ -47,11 +47,7 @@ static void createScreens(struct EngineCore *engine) {
                 },
             },
             .qData = 1,
-            .updateCameraBuffer = updateThirdPersonCameraBuffer,
-            .cameraSize = sizeof(struct ThirdPerson),
-            .cameraBufferSize = sizeof(struct CameraBuffer),
-            .camera = &(struct ThirdPerson){
-            },
+            .camera = defaultThirdPersonCamera(&(struct ThirdPerson) {}),
             .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
         }, &engine->graphics),
         destroyRenderPassObj

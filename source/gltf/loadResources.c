@@ -153,7 +153,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .maxDepth = 1.0f,
         .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 
-        Vert(GltfVertex),
+        .vert = defaultGltfVert(),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
     }, &this->graphics), destroyObjGraphicsPipeline);
@@ -172,7 +172,7 @@ static void addEntities(struct EngineCore *this) {
         .modelData = findResource(modelData, GLTF_MODEL_1),
         .objectLayout = objectLayout->descriptorSetLayout,
 
-        INS(instance, instanceBuffer),
+        .instance = defaultInstance(),
     }, &this->graphics), destroyEntity);
 
     addResource(&this->resource, GLTF_ENTITIES, entityData, cleanupResourceManager);
