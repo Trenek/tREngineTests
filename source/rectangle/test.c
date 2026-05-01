@@ -86,5 +86,9 @@ void recTest(struct EngineCore *engine, enum state *state) {
         normalShadowButton(engine->graphics, engine->window, entity[0], renderPass[0]->cameraBuffer.buffersMapped[0]);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
+
+        if (isKeyJustPressed(&engine->window, GLFW_KEY_T)) {
+            state[1] = MOVE_NEXT_TEST;
+        }
     }
 }

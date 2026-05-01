@@ -45,5 +45,8 @@ void fontTest(struct EngineCore *engine, enum state *state) {
         else if (isKeyJustPressed(&engine->window, GLFW_KEY_N)) {
             state[1] = MOVE_NEXT_STRING;
         }
+        else if (isKeyJustPressed(&engine->window, GLFW_KEY_T)) {
+            state[1] = MOVE_NEXT_TEST;
+        }
     }
 }

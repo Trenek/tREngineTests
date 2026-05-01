@@ -61,6 +61,9 @@ void moveNextObj(struct EngineCore *engine, enum state *state) {
     engine->resource = (struct ResourceManager) {};
 
     state[1] = LOAD_RESOURCES;
+
+    currModel += 1;
+    currModel %= qModels;
 }
 
 static void addModelData(struct EngineCore *this) {
@@ -203,7 +206,4 @@ void loadObjResources(struct EngineCore *engine, enum state *state) {
     addEntities(engine);
 
     state[1] = LOAD_TEST;
-
-    currModel += 1;
-    currModel %= qModels;
 }

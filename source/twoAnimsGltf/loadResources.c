@@ -25,35 +25,10 @@
 
 #define MY_MODEL(x) "samples/myglTF/"x".glb"
 
-static const char *const models[] = {
-    MY_MODEL("czlowiek"),
-    MY_MODEL("player"),
-    MODEL("SimpleSkin"),
-    MODEL("AnimatedTriangle"),
-    MODEL("SimpleMorph"),
-    MODEL_BIN("WaterBottle"),
-    MODEL_EMB("SimpleTexture"),
-    MODEL("SimpleMaterial"),
-    MODEL("SimpleMeshes"),
-    MODEL("SimpleSparseAccessor"),
-    MODEL("TriangleWithoutIndices"),
-    MODEL("Triangle"),
-};
-static const int32_t qModels = sizeof(models) / sizeof(const char *);
-static int32_t currModel = 0;
-
-void moveNextTwoAnimsGltf(struct EngineCore *engine, enum state *state) {
-    vkDeviceWaitIdle(engine->graphics.device);
-    cleanupResourcesOrg(&engine->resource);
-    engine->resource = (struct ResourceManager) {};
-
-    state[1] = LOAD_RESOURCES;
-}
-
 static void addModelData(struct EngineCore *this) {
     struct ResourceManager *modelData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(modelData, TWO_ANIMS_GLTF_MODEL_1, loadModel(models[currModel], &this->graphics), destroyActualModel);
+    addResource(modelData, TWO_ANIMS_GLTF_MODEL_1, loadModel(MY_MODEL("czlowiek"), &this->graphics), destroyActualModel);
 
     addResource(&this->resource, TWO_ANIMS_GLTF_MODEL, modelData, cleanupResourceManager);
 }
@@ -197,7 +172,4 @@ void loadTwoAnimsGltfResources(struct EngineCore *engine, enum state *state) {
     addEntities(engine);
 
     state[1] = LOAD_TEST;
-
-    currModel += 1;
-    currModel %= qModels;
 }

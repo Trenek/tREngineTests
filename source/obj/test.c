@@ -44,5 +44,8 @@ void objTest(struct EngineCore *engine, enum state *state) {
         if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
             state[1] = MOVE_NEXT;
         }
+        else if (isKeyJustPressed(&engine->window, GLFW_KEY_T)) {
+            state[1] = MOVE_NEXT_TEST;
+        }
     }
 }

@@ -8,9 +8,11 @@ enum state {
     GLTF,
     TWO_ANIMS_GLTF,
     REC,
+    TEST_Q,
 
     MOVE_NEXT = 0,
     MOVE_NEXT_STRING,
+    MOVE_NEXT_TEST,
     LOAD_RESOURCES,
     LOAD_TEST,
     TEST,
@@ -45,7 +47,6 @@ void moveNextGltf(struct EngineCore *engine, enum state *state);
 void twoAnimsGltfTest(struct EngineCore *engine, enum state *state);
 void loadTwoAnimsGltfResources(struct EngineCore *engine, enum state *state);
 void loadTwoAnimsGltfTest(struct EngineCore *engine, enum state *state);
-void moveNextTwoAnimsGltf(struct EngineCore *engine, enum state *state);
 
 void recTest(struct EngineCore *engine, enum state *state);
 void loadRecResources(struct EngineCore *engine, enum state *state);

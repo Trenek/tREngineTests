@@ -42,5 +42,9 @@ void multiObjTest(struct EngineCore *engine, enum state *state) {
         moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
 
         drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
+
+        if (isKeyJustPressed(&engine->window, GLFW_KEY_T)) {
+            state[1] = MOVE_NEXT_TEST;
+        }
     }
 }
