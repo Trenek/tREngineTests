@@ -11,6 +11,7 @@
 #include "renderPassObj.h"
 
 #include "twoAnimsGltfEnum.h"
+#include "commandQueue.h"
 #include "gltf.h"
 
 void twoAnimsGltfTest(struct EngineCore *engine, enum state *state) {
@@ -42,16 +43,35 @@ void twoAnimsGltfTest(struct EngineCore *engine, enum state *state) {
 
     float currentTime = 0;
 
+    struct CommandQueue graphics;
+    struct CommandQueue *queue[] = {
+        &graphics,
+    };
+    size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
+
+    createCommandQueue(&graphics, &engine->graphics);
+
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
-        updateWindow(&engine->window);
-    
         animate(entity[0], model[0], 0, currentTime);
         animate(entity[1], model[0], 1, currentTime);
 
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
         moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
 
-        drawFrame(engine, qRenderPass, renderPass, qRenderPassArr, renderPassArr);
+        engineUpdate(engine, qRenderPass, renderPass);
+        
+        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+
+        queueDraw(&graphics, engine, qRenderPass, renderPass, 1, 
+            (VkSemaphore []) {
+                graphics.semaphore[engine->currentFrame],
+            },
+            (VkPipelineStageFlags []) {
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            }
+        );
+
+        presentFrame(engine, qRenderPassArr, renderPassArr, qQueue, queue);
 
         if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
             state[1] = MOVE_NEXT;
@@ -62,4 +82,6 @@ void twoAnimsGltfTest(struct EngineCore *engine, enum state *state) {
 
         currentTime += engine->deltaTime.deltaTime;
     }
+
+    destroyCommandQueue(&graphics, &engine->graphics);
 }

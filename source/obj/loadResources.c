@@ -12,6 +12,7 @@
 #include "renderPassCore.h"
 
 #include "graphicsPipelineLayout.h"
+#include "descriptorSetLayoutObj.h"
 #include "graphicsPipelineObj.h"
 
 #include "objBuilder.h"
@@ -142,7 +143,7 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
                 .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT
             }
         }
-    }, &this->graphics), destroyObjGraphicsPipelineLayout);
+    }, &this->graphics), destroyPipelineLayoutObj);
 
     addResource(&this->resource, OBJ_GRAPHIC_PIPELINE_LAYOUTS, graphicPipelinesData, cleanupResourceManager);
 }
@@ -159,7 +160,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassCore *);
 
-    addResource(graphicPipelinesData, OBJ_GRAPHIC_PIPELINES_1, createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
+    addResource(graphicPipelinesData, OBJ_GRAPHIC_PIPELINES_1, createGraphicsPipelineObj((struct GraphicsPipelineBuilder) {
         .pipelineLayout = pipelineLayout->pipelineLayout,
         .qRenderPassCore = qRenderPass,
         .renderPassCore = renderPass,
@@ -172,7 +173,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .vert = defaultObjVert(),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
-    }, &this->graphics), destroyObjGraphicsPipeline);
+    }, &this->graphics), destroyPipelineObj);
 
     addResource(&this->resource, OBJ_GRAPHIC_PIPELINES, graphicPipelinesData, cleanupResourceManager);
 }

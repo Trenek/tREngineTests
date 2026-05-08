@@ -6,6 +6,7 @@
 
 #include "defaultCamera.h"
 #include "defaultInstance.h"
+#include "descriptorSetLayoutObj.h"
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
@@ -16,7 +17,7 @@ static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *entityData = findResource(&engine->resource, MULTI_OBJ_ENTITIES);
     struct ResourceManager *graphicPipelineData = findResource(&engine->resource, MULTI_OBJ_GRAPHIC_PIPELINES);
 
-    struct graphicsPipeline *pipe[] = { 
+    struct Pipeline *pipe[] = { 
         findResource(graphicPipelineData, MULTI_OBJ_GRAPHIC_PIPELINES_1),
     };
     struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_CAMERA);
@@ -38,7 +39,7 @@ static void createScreens(struct EngineCore *engine) {
             .coordinates = { 0.0, 0.0, 1.0, 1.0 },
             .color = { 0.5f, 0.5f, 0.5f, 1.0f },
             .renderPass = clean,
-            .data = (struct pipelineConnection[]) {
+            .data = (struct pipelineConnectionBuilder[]) {
                 {
                     .texture = &colorTexture->descriptor,
                     .pipe = pipe[0],
@@ -55,7 +56,8 @@ static void createScreens(struct EngineCore *engine) {
                 .center = { 0.0f, 0.0f, 0.0f },
                 .relativePos = { 2.0f, 2.0f, 2.0f },
             }),
-            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
+            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout,
+            .drawRenderPass = drawRenderPass,
         }, &engine->graphics),
         destroyRenderPassObj
     );

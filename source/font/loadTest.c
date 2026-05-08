@@ -5,6 +5,7 @@
 
 #include "defaultCamera.h"
 #include "defaultInstance.h"
+#include "descriptorSetLayoutObj.h"
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
@@ -17,7 +18,7 @@ static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, FONT_RENDER_PASS);
 
     struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
-    struct graphicsPipeline *pipe[] = { 
+    struct Pipeline *pipe[] = { 
         findResource(graphicPipelineData, FONT_GRAPHIC_PIPELINES_1),
     };
     struct Entity *entity[] = {
@@ -32,7 +33,7 @@ static void createScreens(struct EngineCore *engine) {
             .coordinates = { 0.0, 0.0, 1.0, 1.0 },
             .color = { 0.5f, 0.5f, 0.5f, 1.0f },
             .renderPass = clean,
-            .data = (struct pipelineConnection[]) {
+            .data = (struct pipelineConnectionBuilder[]) {
                 {
                     .pipe = pipe[0],
                     .entity = (struct Entity *[]) {
@@ -46,7 +47,8 @@ static void createScreens(struct EngineCore *engine) {
                 .center = { 0.0f, 0.0f, 0.0f },
                 .relativePos = { -2.0f, 0.0f, 0.0f }
             }),
-            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout
+            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout,
+            .drawRenderPass = drawRenderPass,
         }, &engine->graphics),
         destroyRenderPassObj
     );

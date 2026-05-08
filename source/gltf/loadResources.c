@@ -11,6 +11,7 @@
 #include "defaultInstance.h"
 
 #include "renderPassCore.h"
+#include "descriptorSetLayoutObj.h"
 
 #include "graphicsPipelineLayout.h"
 #include "graphicsPipelineObj.h"
@@ -75,7 +76,6 @@ static void addTextures(struct EngineCore *this) {
     addResource(&this->resource, GLTF_TEXTURES, textureManager, cleanupResourceManager);
 }
 
-
 static void addRenderPassCoreData(struct EngineCore *this) {
     struct ResourceManager *renderPassCoreData = calloc(1, sizeof(struct ResourceManager));
 
@@ -129,7 +129,7 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
                 .stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT
             }
         }
-    }, &this->graphics), destroyObjGraphicsPipelineLayout);
+    }, &this->graphics), destroyPipelineLayoutObj);
 
     addResource(&this->resource, GLTF_GRAPHIC_PIPELINE_LAYOUTS, graphicPipelinesData, cleanupResourceManager);
 }
@@ -146,7 +146,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     };
     size_t qRenderPass = sizeof(renderPass) / sizeof(struct renderPassCore *);
 
-    addResource(graphicPipelinesData, GLTF_GRAPHIC_PIPELINES_1, createObjGraphicsPipeline((struct graphicsPipelineBuilder) {
+    addResource(graphicPipelinesData, GLTF_GRAPHIC_PIPELINES_1, createGraphicsPipelineObj((struct GraphicsPipelineBuilder) {
         .pipelineLayout = pipelineLayout->pipelineLayout,
         .qRenderPassCore = qRenderPass,
         .renderPassCore = renderPass,
@@ -159,7 +159,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
         .vert = defaultGltfVert(),
         .operation = VK_COMPARE_OP_LESS,
         .cullFlags = VK_CULL_MODE_BACK_BIT,
-    }, &this->graphics), destroyObjGraphicsPipeline);
+    }, &this->graphics), destroyPipelineObj);
 
     addResource(&this->resource, GLTF_GRAPHIC_PIPELINES, graphicPipelinesData, cleanupResourceManager);
 }

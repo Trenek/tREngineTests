@@ -48,10 +48,15 @@ int main() {
         [REC][LOAD_TEST] = loadRecTest,
         [REC][LOAD_RESOURCES] = loadRecResources,
         [REC][MOVE_NEXT_TEST] = moveNextTest,
+
+        [COMP][TEST] = compTest,
+        [COMP][LOAD_TEST] = loadCompTest,
+        [COMP][LOAD_RESOURCES] = loadCompResources,
+        [COMP][MOVE_NEXT_TEST] = moveNextTest,
     };
 
     enum state stateID[] = {
-        TWO_ANIMS_GLTF,
+        COMP,
         LOAD_RESOURCES
     };
 
