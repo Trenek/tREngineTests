@@ -5,8 +5,6 @@
 #include "texture.h"
 
 #include "defaultInstance.h"
-#include "defaultCamera.h"
-#include "descriptorSetLayoutObj.h"
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"

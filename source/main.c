@@ -49,6 +49,11 @@ int main() {
         [REC][LOAD_RESOURCES] = loadRecResources,
         [REC][MOVE_NEXT_TEST] = moveNextTest,
 
+        [SCREEN][TEST] = screenTest,
+        [SCREEN][LOAD_TEST] = loadScreenTest,
+        [SCREEN][LOAD_RESOURCES] = loadScreenResources,
+        [SCREEN][MOVE_NEXT_TEST] = moveNextTest,
+
         [COMP][TEST] = compTest,
         [COMP][LOAD_TEST] = loadCompTest,
         [COMP][LOAD_RESOURCES] = loadCompResources,
@@ -61,7 +66,7 @@ int main() {
     };
 
     enum state stateID[] = {
-        TWO_ANIMS_GLTF,
+        SCREEN,
         LOAD_RESOURCES
     };
 

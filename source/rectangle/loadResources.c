@@ -31,11 +31,10 @@ static void addModelData(struct EngineCore *this) {
 static void addTextures(struct EngineCore *this) {
     struct ResourceManager *textureManager = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(
-        textureManager, 
-        REC_TEXTURE_1,
-        loadTextures(&this->graphics, 1, (struct TextureData []) {
-            { .data = "samples/myTextures/random.png" }
+    addResource(textureManager, REC_TEXTURE_1,
+        loadTextures(&this->graphics, 2, (struct TextureData []) {
+            { .data = "samples/myTextures/random.png" },
+            { .data = "samples/myTextures/cubes.png" },
         }), 
         unloadTextures
     );
@@ -128,7 +127,7 @@ static void addEntities(struct EngineCore *this) {
 
     struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, REC_OBJECT_LAYOUT), REC_OBJECT_LAYOUT_OBJECT);
 
-    addResource(entityData, REC_ENTITIES_1, createRec((struct RecBuilder) {
+    addResource(entityData, REC_ENTITIES_1, createInstancedRec((struct RecBuilder) {
         .instanceCount = 1,
         .modelData = findResource(modelData, REC_MODEL_1),
         .objectLayout = objectLayout->descriptorSetLayout,
