@@ -14,7 +14,7 @@ layout(location = 9) in  vec3 inMorphPos4;
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoords;
 
-layout(set = 2, binding = 0) readonly uniform UniformBufferObject {
+layout(set = 0, binding = 0) readonly uniform UniformBufferObject {
     mat4 view;
     mat4 proj;
 
@@ -41,15 +41,15 @@ struct NodeData {
     int c;
 };
 
-layout(std140, set = 0, binding = 0) readonly buffer ObjectBuffer{
+layout(std140, set = 2, binding = 0) readonly buffer ObjectBuffer{
 	ObjectData objects[];
 } instance;
 
-layout(std140, set = 0, binding = 1) readonly buffer NodeBuffer1{
+layout(std140, set = 2, binding = 1) readonly buffer NodeBuffer1{
     mat4 transform[];
 } node1;
 
-layout(std140, set = 0, binding = 2) readonly buffer NodeBuffer2{
+layout(std140, set = 2, binding = 2) readonly buffer NodeBuffer2{
     NodeData data[];
 } node2;
 

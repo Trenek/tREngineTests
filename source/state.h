@@ -9,6 +9,7 @@ enum state {
     TWO_ANIMS_GLTF,
     REC,
     COMP,
+    COMP_TEXT,
     TEST_Q,
 
     MOVE_NEXT = 0,
@@ -56,4 +57,8 @@ void loadRecTest(struct EngineCore *engine, enum state *state);
 void compTest(struct EngineCore *engine, enum state *state);
 void loadCompResources(struct EngineCore *engine, enum state *state);
 void loadCompTest(struct EngineCore *engine, enum state *state);
+
+void compTextTest(struct EngineCore *engine, enum state *state);
+void loadCompTextResources(struct EngineCore *engine, enum state *state);
+void loadCompTextTest(struct EngineCore *engine, enum state *state);
 #endif

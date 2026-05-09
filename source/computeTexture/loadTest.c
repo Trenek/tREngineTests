@@ -11,26 +11,26 @@
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
 
-#include "compEnum.h"
+#include "compTextEnum.h"
 
 static void createScreens(struct EngineCore *engine) {
-    struct ResourceManager *entityData = findResource(&engine->resource, COMP_ENTITIES);
-    struct ResourceManager *graphicPipelineData = findResource(&engine->resource, COMP_GRAPHIC_PIPELINES);
+    struct ResourceManager *entityData = findResource(&engine->resource, COMP_TEXT_ENTITIES);
+    struct ResourceManager *graphicPipelineData = findResource(&engine->resource, COMP_TEXT_GRAPHIC_PIPELINES);
 
     struct Pipeline *pipe[] = { 
-        findResource(graphicPipelineData, COMP_GRAPHIC_PIPELINE_PURE),
+        findResource(graphicPipelineData, COMP_TEXT_GRAPHIC_PIPELINE_PURE),
     };
 
     struct Entity *entity[] = {
-        findResource(entityData, COMP_ENTITIES_1)
+        findResource(entityData, COMP_TEXT_ENTITIES_1)
     };
     
     struct ResourceManager *screenData = calloc(1, sizeof(struct ResourceManager));
 
-    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, COMP_RENDER_PASS);
-    struct renderPassCore *clean = findResource(renderPassCoreData, COMP_RENDER_PASS_CLEAN);
+    struct ResourceManager *renderPassCoreData = findResource(&engine->resource, COMP_TEXT_RENDER_PASS);
+    struct renderPassCore *clean = findResource(renderPassCoreData, COMP_TEXT_RENDER_PASS_CLEAN);
 
-    addResource(screenData, COMP_SCREEN_2,
+    addResource(screenData, COMP_TEXT_SCREEN_2,
         createRenderPassObj((struct renderPassBuilder){
             .coordinates = { 0.0, 0.0, 1.0, 1.0 },
             .color = { 0.0f, 0.0f, 0.0f, 1.0f },
@@ -48,10 +48,10 @@ static void createScreens(struct EngineCore *engine) {
         destroyRenderPassObj
     );
 
-    addResource(&engine->resource, COMP_SCREEN, screenData, cleanupResourceManager);
+    addResource(&engine->resource, COMP_TEXT_SCREEN, screenData, cleanupResourceManager);
 }
 
-void loadCompTest(struct EngineCore *engine, enum state *state) {
+void loadCompTextTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
 
     state[1] = TEST;

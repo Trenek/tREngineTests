@@ -103,8 +103,8 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
 
     addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
-            objectLayout->descriptorSetLayout,
             cameraLayout->descriptorSetLayout,
+            objectLayout->descriptorSetLayout,
         },
         .qDescriptorSetLayout = 2,
 

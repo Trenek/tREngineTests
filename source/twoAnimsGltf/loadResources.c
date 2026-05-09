@@ -88,9 +88,9 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
 
     addResource(graphicPipelinesData, TWO_ANIMS_GLTF_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
-            objectLayout->descriptorSetLayout,
-            colorTexture->descriptor.descriptorSetLayout,
             cameraLayout->descriptorSetLayout,
+            colorTexture->descriptor.descriptorSetLayout,
+            objectLayout->descriptorSetLayout,
         },
         .qDescriptorSetLayout = 3,
 

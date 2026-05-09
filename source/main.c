@@ -53,16 +53,21 @@ int main() {
         [COMP][LOAD_TEST] = loadCompTest,
         [COMP][LOAD_RESOURCES] = loadCompResources,
         [COMP][MOVE_NEXT_TEST] = moveNextTest,
+
+        [COMP_TEXT][TEST] = compTextTest,
+        [COMP_TEXT][LOAD_TEST] = loadCompTextTest,
+        [COMP_TEXT][LOAD_RESOURCES] = loadCompTextResources,
+        [COMP_TEXT][MOVE_NEXT_TEST] = moveNextTest,
     };
 
     enum state stateID[] = {
-        COMP,
+        TWO_ANIMS_GLTF,
         LOAD_RESOURCES
     };
 
     do {
         state[stateID[0]][stateID[1]](&engine, stateID);
-    } while (stateID[0] != EXIT && !shouldWindowClose(engine.window));
+    } while (stateID[1] != EXIT && !shouldWindowClose(engine.window));
 
     cleanup(engine);
 
