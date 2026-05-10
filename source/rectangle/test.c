@@ -24,13 +24,15 @@ static void normalShadowButton(struct GraphicsSetup gs, struct WindowManager wm,
     struct instance *instance = entity->instance;
     struct instanceBuffer *instanceBuffer = entity->buffer[0];
 
-    vec3 p; {
+    vec2 p; {
         double pp[2];
+        float scale[2];
 
         glfwGetCursorPos(wm.window, pp, pp + 1);
+        glfwGetWindowContentScale(wm.window, scale, scale + 1); // for proper handling of different resolution monitors
 
-        p[0] = 2 * pp[0] / gs.swapChain.extent.width - 1;
-        p[1] = 2 * pp[1] / gs.swapChain.extent.height - 1;
+        p[0] = 2 * scale[0] * pp[0] / gs.swapChain.extent.width - 1;
+        p[1] = 2 * scale[1] * pp[1] / gs.swapChain.extent.height - 1;
     }
 
     vec3 temp[4] = {
