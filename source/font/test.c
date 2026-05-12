@@ -15,6 +15,7 @@ void fontTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *entityData = findResource(&engine->resource, FONT_ENTITIES);
     struct ResourceManager *screenData = findResource(&engine->resource, FONT_SCREEN);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, FONT_RENDER_PASS);
+    struct ResourceManager *commandQueue = findResource(&engine->resource, FONT_COMMAND_QUEUE);
 
     struct Entity *entity[] = {
         findResource(entityData, FONT_ENTITIES_1)
@@ -32,25 +33,30 @@ void fontTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
 
-    struct CommandQueue graphics;
+    struct CommandQueue *graphics = findResource(commandQueue, FONT_COMMAND_QUEUE_GRAPHICS);
     struct CommandQueue *queue[] = {
-        &graphics,
+        graphics,
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
 
-    createCommandQueue(&graphics, &engine->graphics);
+    struct instance *floor = entity[0]->instance;
+    float scale = 3 * 10e-6;
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
         moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
 
+        floor[0].scale[0] = scale;
+        floor[0].scale[1] = scale;
+        floor[0].scale[2] = scale;
+
         engineUpdate(engine, qRenderPass, renderPass);
         
-        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+        aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);
 
-        queueDraw(&graphics, engine, qRenderPass, renderPass, 1, 
+        queueDraw(graphics, engine, qRenderPass, renderPass, 1, 
             (VkSemaphore []) {
-                graphics.semaphore[engine->currentFrame],
+                graphics->semaphore[engine->currentFrame],
             },
             (VkPipelineStageFlags []) {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -68,7 +74,8 @@ void fontTest(struct EngineCore *engine, enum state *state) {
         else if (isKeyJustPressed(&engine->window, GLFW_KEY_T)) {
             state[1] = MOVE_NEXT_TEST;
         }
-    }
 
-    destroyCommandQueue(&graphics, &engine->graphics);
+        if (isKeyPressed(&engine->window, GLFW_KEY_UP)) scale += 10e-8;
+        if (isKeyPressed(&engine->window, GLFW_KEY_DOWN)) scale -= 10e-8;
+    }
 }

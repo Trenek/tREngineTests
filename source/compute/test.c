@@ -21,6 +21,7 @@
 void compTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *screenData = findResource(&engine->resource, COMP_SCREEN);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, COMP_RENDER_PASS);
+    struct ResourceManager *commandQueue = findResource(&engine->resource, COMP_COMMAND_QUEUE);
 
     struct renderPassObj *renderPass[] = {
         findResource(screenData, COMP_SCREEN_2),
@@ -52,29 +53,25 @@ void compTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qComputePass = sizeof(computePass) / sizeof(struct ComputePass);
 
-    struct CommandQueue graphics;
-    struct CommandQueue compute;
-
+    struct CommandQueue *graphics = findResource(commandQueue, COMP_COMMAND_QUEUE_GRAPHICS);
+    struct CommandQueue *compute = findResource(commandQueue, COMP_COMMAND_QUEUE_COMPUTE);
     struct CommandQueue *queue[] = {
-        &graphics,
-        &compute,
+        graphics,
+        compute
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
-
-    createCommandQueue(&graphics, &engine->graphics);
-    createCommandQueue(&compute, &engine->graphics);
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
         engineUpdate(engine, qRenderPass, renderPass);
 
-        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+        aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);
 
-        queueCompute(&compute, engine, qComputePass, computePass);
-        queueDraw(&graphics, engine, qRenderPass, renderPass, 2, 
+        queueCompute(compute, engine, qComputePass, computePass);
+        queueDraw(graphics, engine, qRenderPass, renderPass, 2, 
             (VkSemaphore []) {
-                compute.semaphore[engine->currentFrame],
-                graphics.semaphore[engine->currentFrame],
+                compute->semaphore[engine->currentFrame],
+                graphics->semaphore[engine->currentFrame],
             },
             (VkPipelineStageFlags []) {
                 VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
@@ -96,7 +93,4 @@ void compTest(struct EngineCore *engine, enum state *state) {
             state[1] = MOVE_NEXT_TEST;
         }
     }
-
-    destroyCommandQueue(&graphics, &engine->graphics);
-    destroyCommandQueue(&compute, &engine->graphics);
 }

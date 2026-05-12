@@ -10,6 +10,7 @@
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
+#include "commandQueue.h"
 
 #include "twoAnimsGltfEnum.h"
 
@@ -82,8 +83,17 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, TWO_ANIMS_GLTF_SCREEN, screenData, cleanupResourceManager);
 }
 
+static void createCommandQueues(struct EngineCore *engine) {
+    struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
+
+    addResource(queueData, TWO_ANIMS_GLTF_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+
+    addResource(&engine->resource, TWO_ANIMS_GLTF_COMMAND_QUEUE, queueData, cleanupResourceManager);
+}
+
 void loadTwoAnimsGltfTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
+    createCommandQueues(engine);
 
     state[1] = TEST;
 }

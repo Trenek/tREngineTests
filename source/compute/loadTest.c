@@ -8,6 +8,7 @@
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
+#include "commandQueue.h"
 
 #include "compEnum.h"
 
@@ -49,8 +50,18 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, COMP_SCREEN, screenData, cleanupResourceManager);
 }
 
+static void createCommandQueues(struct EngineCore *engine) {
+    struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
+
+    addResource(queueData, COMP_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, COMP_COMMAND_QUEUE_COMPUTE, createCommandQueue(&engine->graphics), destroyCommandQueue);
+
+    addResource(&engine->resource, COMP_COMMAND_QUEUE, queueData, cleanupResourceManager);
+}
+
 void loadCompTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
+    createCommandQueues(engine);
 
     state[1] = TEST;
 }

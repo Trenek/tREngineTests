@@ -115,7 +115,8 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
                 .size = sizeof(struct FontPushConstants),
                 .stageFlags = VK_SHADER_STAGE_VERTEX_BIT
             }
-        }
+        },
+        .debugName = "Bob",
     }, &this->graphics), destroyPipelineLayoutObj);
 
     addResource(&this->resource, FONT_GRAPHIC_PIPELINE_LAYOUTS, graphicPipelinesData, cleanupResourceManager);

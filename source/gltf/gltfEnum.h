@@ -7,6 +7,7 @@ enum objEnum {
     GLTF_GRAPHIC_PIPELINE_LAYOUTS,
     GLTF_ENTITIES,
     GLTF_SCREEN,
+    GLTF_COMMAND_QUEUE,
 
     GLTF_TEXTURE_1 = 0,
 
@@ -25,4 +26,6 @@ enum objEnum {
     GLTF_ENTITIES_1 = 0,
 
     GLTF_SCREEN_1 = 0,
+
+    GLTF_COMMAND_QUEUE_GRAPHICS = 0,
 };

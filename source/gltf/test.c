@@ -19,6 +19,7 @@ void gltfTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *entityData = findResource(&engine->resource, GLTF_ENTITIES);
     struct ResourceManager *screenData = findResource(&engine->resource, GLTF_SCREEN);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, GLTF_RENDER_PASS);
+    struct ResourceManager *commandQueue = findResource(&engine->resource, GLTF_COMMAND_QUEUE);
 
     struct Entity *entity[] = {
         findResource(entityData, GLTF_ENTITIES_1)
@@ -42,14 +43,11 @@ void gltfTest(struct EngineCore *engine, enum state *state) {
 
     float currentTime = 0;
 
-    struct CommandQueue graphics;
-
+    struct CommandQueue *graphics = findResource(commandQueue, GLTF_COMMAND_QUEUE_GRAPHICS);
     struct CommandQueue *queue[] = {
-        &graphics,
+        graphics,
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
-
-    createCommandQueue(&graphics, &engine->graphics);
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         animate(entity[0], model[0], 0, currentTime);
@@ -58,11 +56,11 @@ void gltfTest(struct EngineCore *engine, enum state *state) {
 
         engineUpdate(engine, qRenderPass, renderPass);
         
-        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+        aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);
 
-        queueDraw(&graphics, engine, qRenderPass, renderPass, 1, 
+        queueDraw(graphics, engine, qRenderPass, renderPass, 1, 
             (VkSemaphore []) {
-                graphics.semaphore[engine->currentFrame],
+                graphics->semaphore[engine->currentFrame],
             },
             (VkPipelineStageFlags []) {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -80,6 +78,4 @@ void gltfTest(struct EngineCore *engine, enum state *state) {
 
         currentTime += engine->deltaTime.deltaTime;
     }
-
-    destroyCommandQueue(&graphics, &engine->graphics);
 }

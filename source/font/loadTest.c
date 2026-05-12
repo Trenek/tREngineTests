@@ -9,6 +9,7 @@
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
+#include "commandQueue.h"
 
 #include "fontEnum.h"
 
@@ -66,8 +67,17 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, FONT_SCREEN, screenData, cleanupResourceManager);
 }
 
+static void createCommandQueues(struct EngineCore *engine) {
+    struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
+
+    addResource(queueData, FONT_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+
+    addResource(&engine->resource, FONT_COMMAND_QUEUE, queueData, cleanupResourceManager);
+}
+
 void loadFontTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
+    createCommandQueues(engine);
 
     state[1] = TEST;
 }

@@ -7,6 +7,7 @@ enum objEnum {
     OBJ_GRAPHIC_PIPELINE_LAYOUTS,
     OBJ_ENTITIES,
     OBJ_SCREEN,
+    OBJ_COMMAND_QUEUE,
 
     OBJ_TEXTURE_1 = 0,
 
@@ -25,4 +26,6 @@ enum objEnum {
     OBJ_ENTITIES_1 = 0,
 
     OBJ_SCREEN_1 = 0,
+
+    OBJ_COMMAND_QUEUE_GRAPHICS = 0,
 };

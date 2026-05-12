@@ -17,6 +17,7 @@ void objTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *entityData = findResource(&engine->resource, OBJ_ENTITIES);
     struct ResourceManager *screenData = findResource(&engine->resource, OBJ_SCREEN);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, OBJ_RENDER_PASS);
+    struct ResourceManager *commandQueue = findResource(&engine->resource, OBJ_COMMAND_QUEUE);
 
     struct Entity *entity[] = {
         findResource(entityData, OBJ_ENTITIES_1)
@@ -34,13 +35,11 @@ void objTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
 
-    struct CommandQueue graphics;
+    struct CommandQueue *graphics = findResource(commandQueue, OBJ_COMMAND_QUEUE_GRAPHICS);
     struct CommandQueue *queue[] = {
-        &graphics,
+        graphics,
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
-
-    createCommandQueue(&graphics, &engine->graphics);
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
@@ -48,11 +47,11 @@ void objTest(struct EngineCore *engine, enum state *state) {
 
         engineUpdate(engine, qRenderPass, renderPass);
         
-        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+        aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);
 
-        queueDraw(&graphics, engine, qRenderPass, renderPass, 1, 
+        queueDraw(graphics, engine, qRenderPass, renderPass, 1, 
             (VkSemaphore []) {
-                graphics.semaphore[engine->currentFrame],
+                graphics->semaphore[engine->currentFrame],
             },
             (VkPipelineStageFlags []) {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -68,6 +67,4 @@ void objTest(struct EngineCore *engine, enum state *state) {
             state[1] = MOVE_NEXT_TEST;
         }
     }
-
-    destroyCommandQueue(&graphics, &engine->graphics);
 }

@@ -7,6 +7,7 @@ enum recEnum {
     REC_GRAPHIC_PIPELINE_LAYOUTS,
     REC_ENTITIES,
     REC_SCREEN,
+    REC_COMMAND_QUEUE,
 
     REC_TEXTURE_1 = 0,
 
@@ -25,4 +26,6 @@ enum recEnum {
     REC_ENTITIES_1 = 0,
 
     REC_SCREEN_1 = 0,
+
+    REC_COMMAND_QUEUE_GRAPHICS = 0,
 };

@@ -18,6 +18,7 @@ void screenTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *entityData = findResource(&engine->resource, SCREEN_ENTITIES);
     struct ResourceManager *screenData = findResource(&engine->resource, SCREEN_SCREEN);
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, SCREEN_RENDER_PASS);
+    struct ResourceManager *commandQueue = findResource(&engine->resource, SCREEN_COMMAND_QUEUE);
 
     struct Entity *entity[] = {
         findResource(entityData, SCREEN_ENTITIES_1)
@@ -36,13 +37,11 @@ void screenTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qRenderPassArr = sizeof(renderPassArr) / sizeof(struct renderPassCore *);
 
-    struct CommandQueue graphics;
+    struct CommandQueue *graphics = findResource(commandQueue, SCREEN_COMMAND_QUEUE_GRAPHICS);
     struct CommandQueue *queue[] = {
-        &graphics,
+        graphics,
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
-
-    createCommandQueue(&graphics, &engine->graphics);
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         struct MyBuffer {
@@ -61,11 +60,11 @@ void screenTest(struct EngineCore *engine, enum state *state) {
 
         engineUpdate(engine, qRenderPass, renderPass);
         
-        aquireNextImage(engine, graphics.inFlightFence, graphics.semaphore);
+        aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);
 
-        queueDraw(&graphics, engine, qRenderPass, renderPass, 1, 
+        queueDraw(graphics, engine, qRenderPass, renderPass, 1, 
             (VkSemaphore []) {
-                graphics.semaphore[engine->currentFrame],
+                graphics->semaphore[engine->currentFrame],
             },
             (VkPipelineStageFlags []) {
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -78,6 +77,4 @@ void screenTest(struct EngineCore *engine, enum state *state) {
             state[1] = MOVE_NEXT_TEST;
         }
     }
-
-    destroyCommandQueue(&graphics, &engine->graphics);
 }

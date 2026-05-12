@@ -5,11 +5,10 @@
 #include "texture.h"
 
 #include "defaultInstance.h"
-#include "defaultCamera.h"
-#include "descriptorSetLayoutObj.h"
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
+#include "commandQueue.h"
 
 #include "compTextEnum.h"
 
@@ -51,8 +50,18 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, COMP_TEXT_SCREEN, screenData, cleanupResourceManager);
 }
 
+static void createCommandQueues(struct EngineCore *engine) {
+    struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
+
+    addResource(queueData, COMP_TEXT_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, COMP_TEXT_COMMAND_QUEUE_COMPUTE, createCommandQueue(&engine->graphics), destroyCommandQueue);
+
+    addResource(&engine->resource, COMP_TEXT_COMMAND_QUEUE, queueData, cleanupResourceManager);
+}
+
 void loadCompTextTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
+    createCommandQueues(engine);
 
     state[1] = TEST;
 }

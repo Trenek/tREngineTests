@@ -6,6 +6,7 @@ enum fontEnum {
     FONT_GRAPHIC_PIPELINE_LAYOUTS,
     FONT_ENTITIES,
     FONT_SCREEN,
+    FONT_COMMAND_QUEUE,
 
     FONT_TEXTURE_1 = 0,
 
@@ -24,4 +25,6 @@ enum fontEnum {
     FONT_ENTITIES_1 = 0,
 
     FONT_SCREEN_1 = 0,
+
+    FONT_COMMAND_QUEUE_GRAPHICS = 0,
 };

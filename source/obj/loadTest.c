@@ -10,6 +10,7 @@
 
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
+#include "commandQueue.h"
 
 #include "objEnum.h"
 
@@ -71,8 +72,17 @@ static void createScreens(struct EngineCore *engine) {
     addResource(&engine->resource, OBJ_SCREEN, screenData, cleanupResourceManager);
 }
 
+static void createCommandQueues(struct EngineCore *engine) {
+    struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
+
+    addResource(queueData, OBJ_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+
+    addResource(&engine->resource, OBJ_COMMAND_QUEUE, queueData, cleanupResourceManager);
+}
+
 void loadObjTest(struct EngineCore *engine, enum state *state) {
     createScreens(engine);
+    createCommandQueues(engine);
 
     state[1] = TEST;
 }
