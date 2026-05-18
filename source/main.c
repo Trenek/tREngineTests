@@ -58,15 +58,10 @@ int main() {
         [COMP][LOAD_TEST] = loadCompTest,
         [COMP][LOAD_RESOURCES] = loadCompResources,
         [COMP][MOVE_NEXT_TEST] = moveNextTest,
-
-        [COMP_TEXT][TEST] = compTextTest,
-        [COMP_TEXT][LOAD_TEST] = loadCompTextTest,
-        [COMP_TEXT][LOAD_RESOURCES] = loadCompTextResources,
-        [COMP_TEXT][MOVE_NEXT_TEST] = moveNextTest,
     };
 
     enum state stateID[] = {
-        SCREEN,
+        OBJ,
         LOAD_RESOURCES
     };
 

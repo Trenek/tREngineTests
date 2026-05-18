@@ -33,31 +33,28 @@ static void createScreens(struct EngineCore *engine) {
     struct renderPassCore *clean = findResource(renderPassCoreData, OBJ_RENDER_PASS_CLEAN);
     struct Textures *colorTexture = findResource(findResource(&engine->resource, OBJ_TEXTURES), OBJ_TEXTURE_1);
 
-    addResource(screenData, OBJ_SCREEN_1,
-        createRenderPassObj((struct renderPassBuilder){
-            .coordinates = { 0.0, 0.0, 1.0, 1.0 },
-            .color = { 0.5f, 0.5f, 0.5f, 1.0f },
-            .renderPass = clean,
-            .data = (struct pipelineConnectionBuilder[]) {
-                {
-                    .texture = &colorTexture->descriptor,
-                    .pipe = pipe[0],
-                    .entity = (struct Entity *[]) {
-                        entity[0],
-                    },
-                    .qEntity = 1
+    addResource(screenData, OBJ_SCREEN_1, createRenderPassObj((struct renderPassBuilder){
+        .coordinates = { 0.0, 0.0, 1.0, 1.0 },
+        .color = { 0.5f, 0.5f, 0.5f, 1.0f },
+        .renderPass = clean,
+        .data = (struct pipelineConnectionBuilder[]) {
+            {
+                .texture = &colorTexture->descriptor,
+                .pipe = pipe[0],
+                .entity = (struct Entity *[]) {
+                    entity[0],
                 },
+                .qEntity = 1
             },
-            .qData = 1,
-            .camera = defaultThirdPersonCamera(&(struct ThirdPerson) {
-                .center = { 0.0f, 0.0f, 0.0f },
-                .relativePos = { 2.0f, 2.0f, 2.0f },
-            }),
-            .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout,
-            .drawRenderPass = drawRenderPass,
-        }, &engine->graphics),
-        destroyRenderPassObj
-    );
+        },
+        .qData = 1,
+        .camera = defaultThirdPersonCamera(&(struct ThirdPerson) {
+            .center = { 0.0f, 0.0f, 0.0f },
+            .relativePos = { 2.0f, 2.0f, 2.0f },
+        }),
+        .cameraDescriptorSetLayout = cameraLayout->descriptorSetLayout,
+        .drawRenderPass = drawRenderPass,
+    }, &engine->graphics), destroyRenderPassObj);
 
     struct instance *params = entity[0]->instance;
 

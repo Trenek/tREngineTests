@@ -9,8 +9,19 @@
 #include "graphicsPipelineObj.h"
 #include "renderPassObj.h"
 #include "commandQueue.h"
+#include "bufferObj.h"
 
 #include "compEnum.h"
+
+void drawRenderPassComp2(VkCommandBuffer commandBuffer, uint32_t currentFrame, struct renderPassObj *renderPass) {
+    struct BufferObj *draw = (void *)renderPass->data->drawData[0];
+
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, renderPass->data->pipeline);
+
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &draw->buffer, (VkDeviceSize []) { currentFrame * draw->range });
+
+    vkCmdDraw(commandBuffer, draw->value, 1, 0, 0);
+}
 
 static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *entityData = findResource(&engine->resource, COMP_ENTITIES);
@@ -29,23 +40,20 @@ static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *renderPassCoreData = findResource(&engine->resource, COMP_RENDER_PASS);
     struct renderPassCore *clean = findResource(renderPassCoreData, COMP_RENDER_PASS_CLEAN);
 
-    addResource(screenData, COMP_SCREEN_2,
-        createRenderPassObj((struct renderPassBuilder){
-            .coordinates = { 0.0, 0.0, 1.0, 1.0 },
-            .color = { 0.0f, 0.0f, 0.0f, 1.0f },
-            .renderPass = clean,
-            .data = (struct pipelineConnectionBuilder[]) {
-                {
-                    .pipe = pipe[0],
-                    .entity = entity,
-                    .qEntity = 1
-                },
+    addResource(screenData, COMP_SCREEN_2, createRenderPassObj((struct renderPassBuilder){
+        .coordinates = { 0.0, 0.0, 1.0, 1.0 },
+        .color = { 0.0f, 0.0f, 0.0f, 1.0f },
+        .renderPass = clean,
+        .data = (struct pipelineConnectionBuilder[]) {
+            {
+                .pipe = pipe[0],
+                .entity = entity,
+                .qEntity = 1
             },
-            .qData = 1,
-            .drawRenderPass = drawRenderPassComp,
-        }, &engine->graphics),
-        destroyRenderPassObj
-    );
+        },
+        .qData = 1,
+        .drawRenderPass = drawRenderPassComp2,
+    }, &engine->graphics), destroyRenderPassObj);
 
     addResource(&engine->resource, COMP_SCREEN, screenData, cleanupResourceManager);
 }

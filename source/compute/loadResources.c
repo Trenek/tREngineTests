@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "descriptorObj.h"
-#include "bufferOperations.h"
 
 #include "engineCore.h"
 #include "state.h"
@@ -20,6 +19,7 @@
 #include "graphicsPipelineLayout.h"
 #include "graphicsPipelineObj.h"
 #include "descriptorSetLayoutObj.h"
+#include "bufferObj.h"
 
 #include "rectangle.h"
 
@@ -86,7 +86,8 @@ static float getRand() {
     return fabs((rand() % 1'000'000) / 1'000'000.0);
 }
 
-static void createStorageBuffers(VkBuffer *shaderStorageBuffers, VkDeviceMemory *shaderStorageBufferMemory, struct GraphicsSetup *graphics) {
+struct BufferObj *createStorageBuffers(struct GraphicsSetup *graphics) {
+    struct BufferObj *storageBuffer = NULL;
     srand(time(NULL));
 
     struct Particle *part = malloc(sizeof(struct Particle) * PARTICLE_COUNT);
@@ -102,119 +103,70 @@ static void createStorageBuffers(VkBuffer *shaderStorageBuffers, VkDeviceMemory 
         };
 
         glm_vec2_scale(part[i].position, glm_vec2_norm(part[i].position) * 0.00025f, part[i].velocity);
-         // 0.000125f
     }
-    VkDeviceSize bufferSize = sizeof(struct Particle) * PARTICLE_COUNT;
 
-    VkBuffer srcBuffer = createBuffer(
-        graphics->device,
-        graphics->physicalDevice,
-        graphics->surface,
-        bufferSize * MAX_FRAMES_IN_FLIGHT,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT
-    );
-    VkDeviceMemory srcBufferMem = createBufferMemory(
-        graphics->device,
-        graphics->physicalDevice,
-        srcBuffer,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-    );
+    struct BufferObj *srcBuffer = createBufferObj((struct BufferBuilder) {
+        .bufferUsage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        .memoryProperty = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        .size = sizeof(struct Particle) * PARTICLE_COUNT,
+        .repetitions = 1,
+    }, graphics);
 
     void *data;
 
-    vkMapMemory(graphics->device, srcBufferMem, 0, bufferSize, 0, &data);
-    memcpy(data, part, bufferSize);
-    vkUnmapMemory(graphics->device, srcBufferMem);
+    vkMapMemory(graphics->device, srcBuffer->memory, 0, srcBuffer->range, 0, &data);
+    memcpy(data, part, srcBuffer->range);
+    vkUnmapMemory(graphics->device, srcBuffer->memory);
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
-        shaderStorageBuffers[i] = createBuffer(
-            graphics->device,
-            graphics->physicalDevice,
-            graphics->surface,
-            bufferSize,
-            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
-        );
-        shaderStorageBufferMemory[i] = createBufferMemory(
-            graphics->device,
-            graphics->physicalDevice,
-            shaderStorageBuffers[i],
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
-        );
+    storageBuffer = createBufferObj((struct BufferBuilder) {
+        .bufferUsage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
+                       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
+                       VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        .memoryProperty = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        .size = sizeof(struct Particle) * PARTICLE_COUNT,
+        .repetitions = MAX_FRAMES_IN_FLIGHT,
+        .value = PARTICLE_COUNT
+    }, graphics);
 
-        copyBuffer(srcBuffer, shaderStorageBuffers[i], bufferSize, graphics->device, graphics->transferCommandPool, graphics->transferQueue);
+    VkBufferCopy copyCommands[MAX_FRAMES_IN_FLIGHT]; for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
+        copyCommands[i] = (VkBufferCopy) {
+            .srcOffset = 0,
+            .dstOffset = storageBuffer->range * i,
+            .size = srcBuffer->range
+        };
     }
 
-    destroyBuffer(graphics->device, srcBuffer, srcBufferMem);
+    copyBufferObj(storageBuffer, srcBuffer, MAX_FRAMES_IN_FLIGHT, copyCommands, graphics);
+
+    destroyBufferObj(srcBuffer);
     free(part);
+
+    return storageBuffer;
 }
 
 struct UniformBufferObject {
-    alignas(64) float deltaTime;
+    float deltaTime;
 };
-
-static void createUniformBuffers(struct GraphicsSetup *graphics, VkBuffer *uniformBuffers, VkDeviceMemory *uniformBuffersMemory, void **uniformBuffersMapped) {
-    VkDeviceSize bufferSize = sizeof(struct UniformBufferObject);
-
-    *uniformBuffers = createBuffer(
-        graphics->device,
-        graphics->physicalDevice,
-        graphics->surface,
-        bufferSize * MAX_FRAMES_IN_FLIGHT,
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
-    );
-    *uniformBuffersMemory = createBufferMemory(
-        graphics->device,
-        graphics->physicalDevice,
-        *uniformBuffers,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-    );
-
-    vkMapMemory(graphics->device, *uniformBuffersMemory, 0, bufferSize, 0, uniformBuffersMapped);
-    for (size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        uniformBuffersMapped[i] = (char *)uniformBuffersMapped[0] + i * bufferSize;
-    }
-}
-
-struct BufferData {
-    VkDevice device;
-
-    VkBuffer storageBuffer[MAX_FRAMES_IN_FLIGHT];
-    VkBuffer uniformBuffer;
-    VkDeviceMemory storageMemory[MAX_FRAMES_IN_FLIGHT];
-    VkDeviceMemory uniformMemory;
-};
-
-static void destroyBufferData(void *ptr) {
-    struct BufferData *bd = ptr;
-
-    vkDestroyBuffer(bd->device, bd->uniformBuffer, NULL);
-    vkFreeMemory(bd->device, bd->uniformMemory, NULL);
-
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
-        vkDestroyBuffer(bd->device, bd->storageBuffer[i], NULL);
-        vkFreeMemory(bd->device, bd->storageMemory[i], NULL);
-    }
-}
 
 static void createMemoryBuffers(struct EngineCore *this) {
     struct ResourceManager *data = calloc(1, sizeof(struct ResourceManager));
 
-    void **uniformMapped = malloc(sizeof(void *) * MAX_FRAMES_IN_FLIGHT);
-    struct BufferData *bd = malloc(sizeof(struct BufferData));
-
-    bd->device = this->graphics.device;
-    createUniformBuffers(&this->graphics, &bd->uniformBuffer, &bd->uniformMemory, uniformMapped);
-    createStorageBuffers(bd->storageBuffer, bd->storageMemory, &this->graphics);
-
-    addResource(data, COMP_BUFFER_DATA_MAPPED, uniformMapped, free);
-    addResource(data, COMP_BUFFER_DATA_DATA, bd, destroyBufferData);
+    addResource(data, COMP_BUFFER_DATA_UNIFORM, createBufferObj((struct BufferBuilder) {
+        .bufferUsage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        .memoryProperty = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        .repetitions = MAX_FRAMES_IN_FLIGHT,
+        .size = sizeof(struct UniformBufferObject),
+    }, &this->graphics), destroyBufferObj);
+    addResource(data, COMP_BUFFER_DATA_STORAGE, createStorageBuffers(&this->graphics), destroyBufferObj);
 
     addResource(&this->resource, COMP_BUFFER_DATA, data, cleanupResourceManager);
 }
 
 static void createDescriptorSetss(struct EngineCore *this) {
     struct descriptorSetLayout *computeLayout = findResource(findResource(&this->resource, COMP_OBJECT_LAYOUT), COMP_OBJECT_LAYOUT_COMPUTE);
-    struct BufferData *bd = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_DATA);
+    struct BufferObj *uniform = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_UNIFORM);
+    struct BufferObj *storage = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_STORAGE);
     addResource(&this->resource, COMP_DESCRIPTOR, createDescriptorSetsObj(&this->graphics, &(struct DescriptorObjBuilder) {
         .layout = computeLayout->descriptorSetLayout,
         .qDescriptorPoolSize = 2,
@@ -234,20 +186,20 @@ static void createDescriptorSetss(struct EngineCore *this) {
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
         VkDescriptorBufferInfo uniformBufferInfo = {
-            .buffer = bd->uniformBuffer,
-            .offset = i * sizeof(struct UniformBufferObject),
+            .buffer = uniform->buffer,
+            .offset = i * uniform->range,
             .range = sizeof(struct UniformBufferObject),
         };
 
         VkDescriptorBufferInfo storageBufferInfoLastFrame = {
-            .buffer = bd->storageBuffer[(i - 1 + MAX_FRAMES_IN_FLIGHT) % MAX_FRAMES_IN_FLIGHT],
-            .offset = 0,
+            .buffer = storage->buffer,
+            .offset = ((i - 1 + MAX_FRAMES_IN_FLIGHT) % MAX_FRAMES_IN_FLIGHT) * storage->range,
             .range = sizeof(struct Particle) * PARTICLE_COUNT,
         };
 
         VkDescriptorBufferInfo storageBufferInfoCurrentFrame = {
-            .buffer = bd->storageBuffer[i],
-            .offset = 0,
+            .buffer = storage->buffer,
+            .offset = i * storage->range,
             .range = sizeof(struct Particle) * PARTICLE_COUNT,
         };
 
@@ -353,20 +305,13 @@ static void createGraphicPipelines(struct EngineCore *this) {
 
 static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
-    struct BufferData *bd = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_DATA);
-
-    struct DrawCall2 *a = malloc(sizeof(struct DrawCall2));
-    *a = (struct DrawCall2) {
-        .vertexBuffer = bd->storageBuffer,
-        .verticesQuantity = PARTICLE_COUNT,
-    };
+    struct BufferData *storage = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_STORAGE);
 
     struct Entity *b = malloc(sizeof(struct Entity));
     *b = (struct Entity) {
         .drawCallQuantity = 1,
-        .drawCall = a,
+        .drawCall = storage,
     };
-    addResource(entityData, COMP_DRAWCALLS_1, a, free);
     addResource(entityData, COMP_ENTITIES_1, b, free);
 
     addResource(&this->resource, COMP_ENTITIES, entityData, cleanupResourceManager);

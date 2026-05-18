@@ -20,7 +20,7 @@ layout(set = 0, binding = 0) readonly uniform UniformBufferObject {
 const float AA = 1.0;
 const bool VAPORWAVE = true;
 //#define stereo 1. // -1. for cross-eyed (defaults to parallel view)
-#define speed 10.0
+#define speed 100.0
 const bool wave_thing = true;
 const bool city = false;
 
@@ -214,7 +214,7 @@ void main() {
     for (float y = 0.0; y < 1.0; y += 1.0 / AA) {
         vec2 uv = (2 * (myFragCoord + vec2(x, y)) - RESOLUTION) / RESOLUTION.y;
         
-        const float shutter_speed = 0.25; // for motion blur
+        const float shutter_speed = 0.0; // for motion blur
 
         float dt = fract(hash21(AA * (myFragCoord + vec2(x, y))) + TIME) * shutter_speed;
         jTime = mod(TIME - dt * TIME_DELTA, 4000.0);

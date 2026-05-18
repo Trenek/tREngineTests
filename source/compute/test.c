@@ -15,6 +15,7 @@
 #include "rectangle.h"
 
 #include "graphicsFunctions.h"
+#include "bufferObj.h"
 
 #include "commandQueue.h"
 
@@ -37,18 +38,24 @@ void compTest(struct EngineCore *engine, enum state *state) {
         float deltaTime;
     };
 
-    struct UniformBufferObject **time = findResource(findResource(&engine->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_MAPPED);
+    struct BufferObj *uniform = findResource(findResource(&engine->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_UNIFORM);
+    struct UniformBufferObject *time[MAX_FRAMES_IN_FLIGHT] = {};
+    vkMapMemory(engine->graphics.device, uniform->memory, 0, uniform->range, 0, (void **)&time[0]);
+    for (size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
+        time[i] = (void *)((char *)time[i - 1] + uniform->range);
+    }
     struct DescriptorObj *descriptor = findResource(&engine->resource, 8);
     struct Pipeline *pipeline = findResource(findResource(&engine->resource, 4), 1);
 
-    struct DrawCall2 *dc = findResource(findResource(&engine->resource, COMP_ENTITIES), COMP_DRAWCALLS_1);
+    struct BufferObj *storage = findResource(findResource(&engine->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_STORAGE);
+
     struct ComputePass computePass[] = {
         {
             .pipeline = pipeline->pipeline->pipeline,
             .pipelineLayout = pipeline->pipelineLayout,
 
             .descriptor = descriptor->descriptorSets,
-            .groupCountX = dc->verticesQuantity / 256
+            .groupCountX = storage->value / 256
         }
     };
     size_t qComputePass = sizeof(computePass) / sizeof(struct ComputePass);
@@ -93,4 +100,6 @@ void compTest(struct EngineCore *engine, enum state *state) {
             state[1] = MOVE_NEXT_TEST;
         }
     }
+
+    vkUnmapMemory(graphics->device, uniform->memory);
 }

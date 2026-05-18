@@ -13,6 +13,7 @@
 #include "screenEnum.h"
 #include "rectangle.h"
 #include "commandQueue.h"
+#include "windowManager.h"
 
 void screenTest(struct EngineCore *engine, enum state *state) {
     struct ResourceManager *entityData = findResource(&engine->resource, SCREEN_ENTITIES);
@@ -43,6 +44,8 @@ void screenTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
 
+    bool running = true;
+
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         struct MyBuffer {
             vec2 iResolution;
@@ -53,8 +56,13 @@ void screenTest(struct EngineCore *engine, enum state *state) {
 
         struct MyBuffer *my = renderPass[0]->camera;
 
-        my->iTimeDelta = engine->deltaTime.deltaTime;
-        my->iTime += my->iTimeDelta;
+        if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
+            running = !running;
+        }
+        if (running) {
+            my->iTime += my->iTimeDelta;
+            my->iTimeDelta = engine->deltaTime.deltaTime;
+        }
         my->iResolution[0] = engine->graphics.swapChain.extent.width;
         my->iResolution[1] = engine->graphics.swapChain.extent.height;
 

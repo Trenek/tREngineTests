@@ -90,7 +90,7 @@ void recTest(struct EngineCore *engine, enum state *state) {
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
         updateInstances(entity, qEntity, engine->deltaTime.deltaTime);
         moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
-        normalShadowButton(engine->graphics, engine->window, entity[0], renderPass[0]->cameraBuffer.buffersMapped[0]);
+        normalShadowButton(engine->graphics, engine->window, entity[0], renderPass[0]->cameraMapped[0]);
 
         engineUpdate(engine, qRenderPass, renderPass);
         

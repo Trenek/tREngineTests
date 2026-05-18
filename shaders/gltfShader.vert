@@ -49,7 +49,7 @@ layout(std140, set = 2, binding = 1) readonly buffer NodeBuffer1{
     mat4 transform[];
 } node1;
 
-layout(std140, set = 2, binding = 2) readonly buffer NodeBuffer2{
+layout(std140, set = 2, binding = 3) readonly buffer NodeBuffer2{
     NodeData data[];
 } node2;
 
