@@ -11,6 +11,8 @@ set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CMAKE_COMMAND} -E time")
 
 add_subdirectory(source)
 add_subdirectory(icon)
+add_subdirectory(samples)
+add_subdirectory(shaders)
 
 add_executable(Tester
     ${SOURCE_FILES} 
@@ -57,34 +59,8 @@ else()
 endif()
 
 target_compile_options(Tester PUBLIC ${COMPILE_OPTIONS})
-
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/shaders)
-
-add_custom_target(shaders DEPENDS
-    ${CMAKE_SOURCE_DIR}/shaders
-    ${CMAKE_SOURCE_DIR}/icon
-    ${CMAKE_SOURCE_DIR}/samples
+add_dependencies(Tester
+    icons
+    samples
+    shaders
 )
-
-set(SHADER_SRC "${CMAKE_SOURCE_DIR}/shaders")
-set(SHADER_DST "${CMAKE_BINARY_DIR}/shaders")
-
-add_custom_command(TARGET shaders POST_BUILD
-    COMMAND glslc ${SHADER_SRC}/comp.vert -o ${SHADER_DST}/compVert.spv
-    COMMAND glslc ${SHADER_SRC}/comp.frag -o ${SHADER_DST}/compFrag.spv
-    COMMAND glslc ${SHADER_SRC}/shader.vert -o ${SHADER_DST}/vert.spv
-    COMMAND glslc ${SHADER_SRC}/shader.frag -o ${SHADER_DST}/frag.spv
-    COMMAND glslc ${SHADER_SRC}/shader.comp -o ${SHADER_DST}/comp.spv
-    COMMAND glslc ${SHADER_SRC}/screen.vert -o ${SHADER_DST}/screenVert.spv
-    COMMAND glslc ${SHADER_SRC}/synthwave.frag -o ${SHADER_DST}/synthwaveFrag.spv
-    COMMAND glslc ${SHADER_SRC}/text2d.vert -o ${SHADER_DST}/text2dV.spv
-    COMMAND glslc ${SHADER_SRC}/text.frag -o ${SHADER_DST}/textF.spv
-    COMMAND glslc ${SHADER_SRC}/gltfShader.vert -o ${SHADER_DST}/gltfVert.spv
-    COMMAND glslc ${SHADER_SRC}/gltfShader.frag -o ${SHADER_DST}/gltfFrag.spv
-    COMMAND glslc ${SHADER_SRC}/rec.vert -o ${SHADER_DST}/recVert.spv
-    COMMAND glslc ${SHADER_SRC}/rec.frag -o ${SHADER_DST}/recFrag.spv
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/icon ${CMAKE_BINARY_DIR}/icon
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/samples ${CMAKE_BINARY_DIR}/samples
-)
-
-add_dependencies(Tester shaders)
