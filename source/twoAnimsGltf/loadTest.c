@@ -21,7 +21,7 @@ static void createScreens(struct EngineCore *engine) {
     struct Pipeline *pipe[] = { 
         findResource(graphicPipelineData, TWO_ANIMS_GLTF_GRAPHIC_PIPELINES_1),
     };
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, TWO_ANIMS_GLTF_OBJECT_LAYOUT), TWO_ANIMS_GLTF_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, TWO_ANIMS_GLTF_OBJECT_LAYOUT), TWO_ANIMS_GLTF_OBJECT_LAYOUT_CAMERA);
 
     struct Entity *entity[] = {
         findResource(entityData, TWO_ANIMS_GLTF_ENTITIES_1),
@@ -41,7 +41,7 @@ static void createScreens(struct EngineCore *engine) {
             .renderPass = clean,
             .data = (struct pipelineConnectionBuilder[]) {
                 {
-                    .texture = &colorTexture->descriptor,
+                    .texture = colorTexture->descriptor.descriptorSets,
                     .pipe = pipe[0],
                     .entity = (struct Entity *[]) {
                         entity[0],
@@ -86,7 +86,7 @@ static void createScreens(struct EngineCore *engine) {
 static void createCommandQueues(struct EngineCore *engine) {
     struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(queueData, TWO_ANIMS_GLTF_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, TWO_ANIMS_GLTF_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics, "Graphics Buffer"), destroyCommandQueue);
 
     addResource(&engine->resource, TWO_ANIMS_GLTF_COMMAND_QUEUE, queueData, cleanupResourceManager);
 }

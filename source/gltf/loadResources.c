@@ -110,10 +110,10 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
 
     struct Textures *colorTexture = findResource(findResource(&this->resource, GLTF_TEXTURES), GLTF_TEXTURE_1);
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_OBJECT);
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_CAMERA);
 
-    addResource(graphicPipelinesData, GLTF_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, GLTF_GRAPHIC_PIPELINE_LAYOUT_1, createPipelineLayout((struct PipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
             cameraLayout->descriptorSetLayout,
             colorTexture->descriptor.descriptorSetLayout,
@@ -138,7 +138,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, GLTF_RENDER_PASS);
 
-    struct graphicsPipelineLayout *pipelineLayout = findResource(findResource(&this->resource, GLTF_GRAPHIC_PIPELINE_LAYOUTS), GLTF_GRAPHIC_PIPELINE_LAYOUT_1);
+    struct PipelineLayout *pipelineLayout = findResource(findResource(&this->resource, GLTF_GRAPHIC_PIPELINE_LAYOUTS), GLTF_GRAPHIC_PIPELINE_LAYOUT_1);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, GLTF_RENDER_PASS_CLEAN),
@@ -168,7 +168,7 @@ static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *modelData = findResource(&this->resource, GLTF_MODEL);
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, GLTF_OBJECT_LAYOUT), GLTF_OBJECT_LAYOUT_OBJECT);
 
     addResource(entityData, GLTF_ENTITIES_1, createGltf((struct GltfBuilder) {
         .instanceCount = 1,

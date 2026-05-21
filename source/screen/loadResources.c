@@ -76,9 +76,9 @@ static void addObjectLayout(struct EngineCore *this) {
 static void createGraphicPipelineLayouts(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
 
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_CAMERA);
 
-    addResource(graphicPipelinesData, SCREEN_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, SCREEN_GRAPHIC_PIPELINE_LAYOUT_1, createPipelineLayout((struct PipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
             cameraLayout->descriptorSetLayout,
         },
@@ -92,7 +92,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, SCREEN_RENDER_PASS);
 
-    struct graphicsPipelineLayout *pipelineLayout = findResource(findResource(&this->resource, SCREEN_GRAPHIC_PIPELINE_LAYOUTS), SCREEN_GRAPHIC_PIPELINE_LAYOUT_1);
+    struct PipelineLayout *pipelineLayout = findResource(findResource(&this->resource, SCREEN_GRAPHIC_PIPELINE_LAYOUTS), SCREEN_GRAPHIC_PIPELINE_LAYOUT_1);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, SCREEN_RENDER_PASS_CLEAN),
@@ -122,7 +122,7 @@ static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *modelData = findResource(&this->resource, SCREEN_MODEL);
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_OBJECT);
 
     addResource(entityData, SCREEN_ENTITIES_1, createRec((struct RecBuilder) {
         .instanceCount = 1,

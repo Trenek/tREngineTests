@@ -207,8 +207,9 @@ vec3 gsky(vec3 rd,vec3 ld,bool mask){
 }
 
 void main() {
+    vec2 r = vec2(256.0, 144.0);
     fragColor = vec4(0);
-    vec2 myFragCoord = fragCoord * RESOLUTION;
+    vec2 myFragCoord = floor(r * fragCoord) / r * RESOLUTION;
 
     for (float x = 0.0; x < 1.0; x += 1.0 / AA)
     for (float y = 0.0; y < 1.0; y += 1.0 / AA) {

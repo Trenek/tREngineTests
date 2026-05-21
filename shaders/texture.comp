@@ -1,0 +1,14 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+layout (rgba8, binding = 0) writeonly uniform image2D storageImage;
+
+void main() {
+    ivec2 texelCoords = ivec2(gl_GlobalInvocationID.xy);
+    vec2 fCoords = vec2(texelCoords) / 256.0;
+
+    vec4 color = vec4(fCoords, 0.0, 1.0);
+
+    imageStore(storageImage, texelCoords, color);
+}

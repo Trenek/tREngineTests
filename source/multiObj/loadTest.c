@@ -21,7 +21,7 @@ static void createScreens(struct EngineCore *engine) {
     struct Pipeline *pipe[] = { 
         findResource(graphicPipelineData, MULTI_OBJ_GRAPHIC_PIPELINES_1),
     };
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_CAMERA);
 
     struct Entity *entity[] = {
         findResource(entityData, 0),
@@ -42,7 +42,7 @@ static void createScreens(struct EngineCore *engine) {
             .renderPass = clean,
             .data = (struct pipelineConnectionBuilder[]) {
                 {
-                    .texture = &colorTexture->descriptor,
+                    .texture = colorTexture->descriptor.descriptorSets,
                     .pipe = pipe[0],
                     .entity = (struct Entity *[]) {
                         entity[0],
@@ -99,7 +99,7 @@ static void createScreens(struct EngineCore *engine) {
 static void createCommandQueues(struct EngineCore *engine) {
     struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(queueData, MULTI_OBJ_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, MULTI_OBJ_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics, "Graphics Buffer"), destroyCommandQueue);
 
     addResource(&engine->resource, MULTI_OBJ_COMMAND_QUEUE, queueData, cleanupResourceManager);
 }

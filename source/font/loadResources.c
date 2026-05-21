@@ -98,10 +98,10 @@ static void addObjectLayout(struct EngineCore *this) {
 static void createGraphicPipelineLayouts(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_CAMERA);
 
-    addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, FONT_GRAPHIC_PIPELINE_LAYOUT_1, createPipelineLayout((struct PipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
             cameraLayout->descriptorSetLayout,
             objectLayout->descriptorSetLayout,
@@ -126,7 +126,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, FONT_RENDER_PASS);
 
-    struct graphicsPipelineLayout *pipelineLayout = findResource(findResource(&this->resource, FONT_GRAPHIC_PIPELINE_LAYOUTS), FONT_GRAPHIC_PIPELINE_LAYOUT_1);
+    struct PipelineLayout *pipelineLayout = findResource(findResource(&this->resource, FONT_GRAPHIC_PIPELINE_LAYOUTS), FONT_GRAPHIC_PIPELINE_LAYOUT_1);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, FONT_RENDER_PASS_CLEAN),
@@ -157,7 +157,7 @@ void addString(
     struct ResourceManager *entityData,
     struct ResourceManager *modelData,
 
-    struct descriptorSetLayout *objectLayout,
+    struct DescriptorSetLayout *objectLayout,
     struct EngineCore *this,
     size_t id
 ) {
@@ -176,7 +176,7 @@ static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *modelData = findResource(&this->resource, FONT_MODEL);
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, FONT_OBJECT_LAYOUT), FONT_OBJECT_LAYOUT_OBJECT);
 
     addString(entityData, modelData, objectLayout, this, FONT_ENTITIES_1);
 

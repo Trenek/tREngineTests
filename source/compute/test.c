@@ -44,8 +44,8 @@ void compTest(struct EngineCore *engine, enum state *state) {
     for (size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; i += 1) {
         time[i] = (void *)((char *)time[i - 1] + uniform->range);
     }
-    struct DescriptorObj *descriptor = findResource(&engine->resource, 8);
-    struct Pipeline *pipeline = findResource(findResource(&engine->resource, 4), 1);
+    struct DescriptorObj *descriptor = findResource(&engine->resource, COMP_DESCRIPTOR);
+    struct Pipeline *pipeline = findResource(findResource(&engine->resource, COMP_GRAPHIC_PIPELINES), COMP_GRAPHIC_PIPELINE_COMP);
 
     struct BufferObj *storage = findResource(findResource(&engine->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_STORAGE);
 

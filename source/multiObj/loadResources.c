@@ -118,10 +118,10 @@ static void createGraphicPipelineLayouts(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
 
     struct Textures *colorTexture = findResource(findResource(&this->resource, MULTI_OBJ_TEXTURES), MULTI_OBJ_TEXTURE_1);
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_OBJECT);
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_CAMERA);
 
-    addResource(graphicPipelinesData, MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUT_1, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUT_1, createPipelineLayout((struct PipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
             cameraLayout->descriptorSetLayout,
             colorTexture->descriptor.descriptorSetLayout,
@@ -146,7 +146,7 @@ static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, MULTI_OBJ_RENDER_PASS);
 
-    struct graphicsPipelineLayout *pipelineLayout = findResource(findResource(&this->resource, MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUTS), MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUT_1);
+    struct PipelineLayout *pipelineLayout = findResource(findResource(&this->resource, MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUTS), MULTI_OBJ_GRAPHIC_PIPELINE_LAYOUT_1);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, MULTI_OBJ_RENDER_PASS_CLEAN),
@@ -176,7 +176,7 @@ static void addEntities(struct EngineCore *this) {
     struct ResourceManager *entityData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *modelData = findResource(&this->resource, MULTI_OBJ_MODEL);
 
-    struct descriptorSetLayout *objectLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_OBJECT);
+    struct DescriptorSetLayout *objectLayout = findResource(findResource(&this->resource, MULTI_OBJ_OBJECT_LAYOUT), MULTI_OBJ_OBJECT_LAYOUT_OBJECT);
     size_t *textureOffsets = findResource(&this->resource, MULTI_OBJ_TEXTURE_OFFSETS);
 
     for (int32_t i = 0; i < qModels; i += 1) {

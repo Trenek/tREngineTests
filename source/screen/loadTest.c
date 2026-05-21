@@ -34,7 +34,7 @@ static void createScreens(struct EngineCore *engine) {
     struct Pipeline *pipe[] = { 
         findResource(graphicPipelineData, SCREEN_GRAPHIC_PIPELINES_1),
     };
-    struct descriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_CAMERA);
+    struct DescriptorSetLayout *cameraLayout = findResource(findResource(&engine->resource, SCREEN_OBJECT_LAYOUT), SCREEN_OBJECT_LAYOUT_CAMERA);
 
     struct Entity *entity[] = {
         findResource(entityData, SCREEN_ENTITIES_1)
@@ -86,7 +86,7 @@ static void createScreens(struct EngineCore *engine) {
 static void createCommandQueues(struct EngineCore *engine) {
     struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(queueData, SCREEN_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, SCREEN_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics, "Graphics Buffer"), destroyCommandQueue);
 
     addResource(&engine->resource, SCREEN_COMMAND_QUEUE, queueData, cleanupResourceManager);
 }

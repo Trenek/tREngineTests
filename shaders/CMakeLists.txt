@@ -28,5 +28,7 @@ compile_shader("gltfShader.vert" "gltfVert.spv")
 compile_shader("gltfShader.frag" "gltfFrag.spv")
 compile_shader("rec.vert" "recVert.spv")
 compile_shader("rec.frag" "recFrag.spv")
+compile_shader("texture.frag" "textureFrag.spv")
+compile_shader("texture.comp" "textureComp.spv")
 
 add_custom_target(shaders DEPENDS ${ALL_SPV_OUTPUTS})

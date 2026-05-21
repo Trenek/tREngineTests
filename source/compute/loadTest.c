@@ -61,8 +61,8 @@ static void createScreens(struct EngineCore *engine) {
 static void createCommandQueues(struct EngineCore *engine) {
     struct ResourceManager *queueData = calloc(1, sizeof(struct ResourceManager));
 
-    addResource(queueData, COMP_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics), destroyCommandQueue);
-    addResource(queueData, COMP_COMMAND_QUEUE_COMPUTE, createCommandQueue(&engine->graphics), destroyCommandQueue);
+    addResource(queueData, COMP_COMMAND_QUEUE_GRAPHICS, createCommandQueue(&engine->graphics, "Graphics Buffer"), destroyCommandQueue);
+    addResource(queueData, COMP_COMMAND_QUEUE_COMPUTE, createCommandQueue(&engine->graphics, "Command Buffer"), destroyCommandQueue);
 
     addResource(&engine->resource, COMP_COMMAND_QUEUE, queueData, cleanupResourceManager);
 }

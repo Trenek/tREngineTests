@@ -164,7 +164,7 @@ static void createMemoryBuffers(struct EngineCore *this) {
 }
 
 static void createDescriptorSetss(struct EngineCore *this) {
-    struct descriptorSetLayout *computeLayout = findResource(findResource(&this->resource, COMP_OBJECT_LAYOUT), COMP_OBJECT_LAYOUT_COMPUTE);
+    struct DescriptorSetLayout *computeLayout = findResource(findResource(&this->resource, COMP_OBJECT_LAYOUT), COMP_OBJECT_LAYOUT_COMPUTE);
     struct BufferObj *uniform = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_UNIFORM);
     struct BufferObj *storage = findResource(findResource(&this->resource, COMP_BUFFER_DATA), COMP_BUFFER_DATA_STORAGE);
     addResource(&this->resource, COMP_DESCRIPTOR, createDescriptorSetsObj(&this->graphics, &(struct DescriptorObjBuilder) {
@@ -238,15 +238,15 @@ static void createDescriptorSetss(struct EngineCore *this) {
 static void createGraphicPipelineLayouts(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
 
-    struct descriptorSetLayout *compLayout = findResource(findResource(&this->resource, COMP_OBJECT_LAYOUT), COMP_OBJECT_LAYOUT_COMPUTE);
+    struct DescriptorSetLayout *compLayout = findResource(findResource(&this->resource, COMP_OBJECT_LAYOUT), COMP_OBJECT_LAYOUT_COMPUTE);
 
-    addResource(graphicPipelinesData, COMP_GRAPHIC_PIPELINE_LAYOUT_COMP, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, COMP_GRAPHIC_PIPELINE_LAYOUT_COMP, createPipelineLayout((struct PipelineLayoutBuilder) {
         .descriptorSetLayout = (VkDescriptorSetLayout []){
             compLayout->descriptorSetLayout,
         },
         .qDescriptorSetLayout = 1,
     }, &this->graphics), destroyPipelineLayoutObj);
-    addResource(graphicPipelinesData, COMP_GRAPHIC_PIPELINE_LAYOUT_PURE, createGraphicPipelineLayout((struct graphicsPipelineLayoutBuilder) {
+    addResource(graphicPipelinesData, COMP_GRAPHIC_PIPELINE_LAYOUT_PURE, createPipelineLayout((struct PipelineLayoutBuilder) {
     }, &this->graphics), destroyPipelineLayoutObj);
 
     addResource(&this->resource, COMP_GRAPHIC_PIPELINE_LAYOUTS, graphicPipelinesData, cleanupResourceManager);
@@ -256,8 +256,8 @@ static void createGraphicPipelines(struct EngineCore *this) {
     struct ResourceManager *graphicPipelinesData = calloc(1, sizeof(struct ResourceManager));
     struct ResourceManager *renderPassCoreData = findResource(&this->resource, COMP_RENDER_PASS);
 
-    struct graphicsPipelineLayout *pipelineCompLayout = findResource(findResource(&this->resource, COMP_GRAPHIC_PIPELINE_LAYOUTS), COMP_GRAPHIC_PIPELINE_LAYOUT_COMP);
-    struct graphicsPipelineLayout *pipelinePureLayout = findResource(findResource(&this->resource, COMP_GRAPHIC_PIPELINE_LAYOUTS), COMP_GRAPHIC_PIPELINE_LAYOUT_PURE);
+    struct PipelineLayout *pipelineCompLayout = findResource(findResource(&this->resource, COMP_GRAPHIC_PIPELINE_LAYOUTS), COMP_GRAPHIC_PIPELINE_LAYOUT_COMP);
+    struct PipelineLayout *pipelinePureLayout = findResource(findResource(&this->resource, COMP_GRAPHIC_PIPELINE_LAYOUTS), COMP_GRAPHIC_PIPELINE_LAYOUT_PURE);
 
     struct renderPassCore *renderPass[] = {
         findResource(renderPassCoreData, COMP_RENDER_PASS_CLEAN),
