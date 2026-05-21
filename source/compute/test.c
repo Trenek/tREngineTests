@@ -55,7 +55,8 @@ void compTest(struct EngineCore *engine, enum state *state) {
             .pipelineLayout = pipeline->pipelineLayout,
 
             .descriptor = descriptor->descriptorSets,
-            .groupCountX = storage->value / 256
+            .groupCountX = storage->value / 256,
+            .groupCountY = 1,
         }
     };
     size_t qComputePass = sizeof(computePass) / sizeof(struct ComputePass);
@@ -69,7 +70,6 @@ void compTest(struct EngineCore *engine, enum state *state) {
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
 
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
-        moveThirdPersonCamera(&engine->window, renderPass[0]->camera, engine->deltaTime.deltaTime);
         engineUpdate(engine, qRenderPass, renderPass);
 
         aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);

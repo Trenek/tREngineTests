@@ -13,13 +13,6 @@
 #include "compTextEnum.h"
 #include "descriptorObj.h"
 
-struct MyBuffer {
-    vec2 iResolution;
-    float iTime;
-    float iTimeDelta;
-    vec4 pad[3];
-};
-
 static void createScreens(struct EngineCore *engine) {
     struct ResourceManager *entityData = findResource(&engine->resource, COMP_TEXT_ENTITIES);
     struct ResourceManager *graphicPipelineData = findResource(&engine->resource, COMP_TEXT_GRAPHIC_PIPELINES);
@@ -39,26 +32,23 @@ static void createScreens(struct EngineCore *engine) {
 
     struct DescriptorObj *descriptorFrag = findResource(&engine->resource, COMP_TEXT_DESCRIPTOR_FRAG);
 
-    addResource(screenData, COMP_TEXT_SCREEN_1,
-        createRenderPassObj((struct renderPassBuilder){
-            .coordinates = { 0.0, 0.0, 1.0, 1.0 },
-            .color = { 0.5f, 0.5f, 0.5f, 1.0f },
-            .renderPass = clean,
-            .data = (struct pipelineConnectionBuilder[]) {
-                {
-                    .texture = descriptorFrag->descriptorSets,
-                    .pipe = pipe[0],
-                    .entity = (struct Entity *[]) {
-                        entity[0],
-                    },
-                    .qEntity = 1
+    addResource(screenData, COMP_TEXT_SCREEN_1, createRenderPassObj((struct renderPassBuilder){
+        .coordinates = { 0.0, 0.0, 1.0, 1.0 },
+        .color = { 0.5f, 0.5f, 0.5f, 1.0f },
+        .renderPass = clean,
+        .data = (struct pipelineConnectionBuilder[]) {
+            {
+                .texture = descriptorFrag->descriptorSets,
+                .pipe = pipe[0],
+                .entity = (struct Entity *[]) {
+                    entity[0],
                 },
+                .qEntity = 1
             },
-            .qData = 1,
-            .drawRenderPass = drawRenderPass,
-        }, &engine->graphics),
-        destroyRenderPassObj
-    );
+        },
+        .qData = 1,
+        .drawRenderPass = drawRenderPass,
+    }, &engine->graphics), destroyRenderPassObj);
 
     addResource(&engine->resource, COMP_TEXT_SCREEN, screenData, cleanupResourceManager);
 }

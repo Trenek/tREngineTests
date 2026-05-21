@@ -40,7 +40,7 @@ static void createScreens(struct EngineCore *engine) {
             .renderPass = clean,
             .data = (struct pipelineConnectionBuilder[]) {
                 {
-                    .texture = colorTexture->descriptor.descriptorSets,
+                    .texture = colorTexture->descriptor->descriptorSets,
                     .pipe = pipe[0],
                     .entity = (struct Entity *[]) {
                         entity[0],

@@ -56,28 +56,7 @@ void compTextTest(struct EngineCore *engine, enum state *state) {
     };
     size_t qQueue = sizeof(queue) / sizeof(struct CommandQueue *);
 
-    bool running = true;
-
     while (TEST == state[1] && !shouldWindowClose(engine->window)) {
-        struct MyBuffer {
-            vec2 iResolution;
-            float iTime;
-            float iTimeDelta;
-            vec4 pad[3];
-        };
-
-        struct MyBuffer *my = renderPass[0]->camera;
-
-        if (isKeyJustPressed(&engine->window, GLFW_KEY_SPACE)) {
-            running = !running;
-        }
-        if (running) {
-            my->iTime += my->iTimeDelta;
-            my->iTimeDelta = engine->deltaTime.deltaTime;
-        }
-        my->iResolution[0] = engine->graphics.swapChain.extent.width;
-        my->iResolution[1] = engine->graphics.swapChain.extent.height;
-
         engineUpdate(engine, qRenderPass, renderPass);
         
         aquireNextImage(engine, graphics->inFlightFence, graphics->semaphore);

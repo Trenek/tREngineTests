@@ -7,6 +7,7 @@ foreach(arg RANGE 0 ${CMAKE_ARGC})
 endforeach()
 
 file(GLOB_RECURSE ALL_SAMPLES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*")
+list(FILTER ALL_SAMPLES EXCLUDE REGEX "Unicode")
 
 add_custom_command(
     OUTPUT "${CMAKE_BINARY_DIR}/samples.stamp"
